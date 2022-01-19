@@ -1,0 +1,128 @@
+using System.Collections;
+using UnityEngine;
+using UnityEngine.UI;
+public class GameManager : MonoBehaviour {
+    public static GameManager instance;
+    public Ghost[] ghosts;
+    public Pacman pacman;
+    public Transform pellets;
+    public Text gameOverText, scoreText, livesText, readyText;
+    public int ghostMultiplier { get; private set; } = 1;
+    public int score { get; private set; }
+    public int lives { get; private set; }
+    public float deathSoundWait1, two;
+    public bool paused, pauseInputHit;
+    void Awake() {
+        instance = this;
+    }
+    private void Start() {
+        NewGame();
+        ActivateLivingEntities(false);
+    }
+    private void Update() {
+        //Gameover stuff
+        if (this.lives <= 0 && Input.anyKey) {
+            NewGame();
+        }
+        if(pauseInputHit){
+            pauseInputHit = false;
+            paused = !paused;
+            AudioManager.audioSource.mute = paused;
+            AudioManager.secondaryAudioSource.mute = paused;
+        }
+        Time.timeScale = paused ? 0 : 1;
+    }
+    private void NewGame() {
+        SetScore(0);
+        SetLives(3);
+        NewRound();
+    }
+    private void NewRound() {
+        this.gameOverText.enabled = false;
+        foreach (Transform pellet in pellets) {
+            pellet.gameObject.SetActive(true);
+        }
+        ResetState();
+    }
+    private void ResetState() {
+        for (int i = 0; i < this.ghosts.Length; i++) {
+            this.ghosts[i].ResetState();
+        }
+        this.pacman.ResetState();
+    }
+    private void GameOver() {
+        this.gameOverText.enabled = true;
+        for (int i = 0; i < this.ghosts.Length; i++) {
+            this.ghosts[i].gameObject.SetActive(false);
+        }
+        this.pacman.gameObject.SetActive(false);
+    }
+    private void SetLives(int lives) {
+        this.lives = lives;
+        this.livesText.text = "x" + lives.ToString();
+    }
+    private void SetScore(int score) {
+        this.score = score;
+        this.scoreText.text = score.ToString().PadLeft(2, '0');
+    }
+    public void PacmanEaten() {
+        AudioManager.StopAll();
+        AudioClip deathClip = AudioManager.instance.death;
+        AudioClip deathClip2 = AudioManager.instance.death2;
+        AudioManager.PlayOneShot(deathClip);
+        StartCoroutine(AudioManager.PlayOneShotDelayed(deathClip2, deathSoundWait1));
+        StartCoroutine(AudioManager.PlayOneShotDelayed(deathClip2, deathSoundWait1 + two));
+        this.pacman.DeathSequence();
+        SetLives(this.lives - 1);
+        if (this.lives > 0) {
+            Invoke(nameof(ResetState), 3.0f);
+            AudioClip sirenCold = AudioManager.instance.sirenCold;
+            AudioManager.PlayLoopedDelayed(sirenCold, 3.0f);
+        } else {
+            GameOver();
+        }
+    }
+    public void AddGhostEatenScore(Ghost ghost) {
+        int points = ghost.points * this.ghostMultiplier;
+        SetScore(this.score + points);
+        this.ghostMultiplier++;
+    }
+    public static void PelletEaten(Pellet pellet) {
+        pellet.gameObject.SetActive(false);
+        GameManager.instance.SetScore(GameManager.instance.score + pellet.points);
+        if (!GameManager.instance.HasRemainingPellets()) {
+            GameManager.instance.pacman.gameObject.SetActive(false);
+            GameManager.instance.Invoke(nameof(NewRound), 3.0f);
+        }
+    }
+    public static void PowerPelletEaten(PowerPellet pellet) {
+        for (int i = 0; i < GameManager.instance.ghosts.Length; i++) {
+            GameManager.instance.ghosts[i].frightened.Enable(pellet.duration);
+        }
+        PelletEaten(pellet);
+        GameManager.instance.CancelInvoke(nameof(ResetGhostMultiplier));
+        GameManager.instance.Invoke(nameof(ResetGhostMultiplier), pellet.duration);
+        GameManager.instance.StartCoroutine(PowerPelletWait(pellet.duration));
+    }
+    public static IEnumerator PowerPelletWait(float duration) {
+        yield return new WaitForSeconds(duration);
+        AudioManager.LoopLastClip();
+    }
+    private bool HasRemainingPellets() {
+        foreach (Transform pellet in pellets) {
+            if (pellet.gameObject.activeSelf) {
+                return true;
+            }
+        }
+        return false;
+    }
+    private void ResetGhostMultiplier() {
+        this.ghostMultiplier = 1;
+    }
+    public void ActivateLivingEntities(bool isActive) {
+        pacman.gameObject.SetActive(isActive);
+        foreach (var item in ghosts) {
+            item.gameObject.SetActive(isActive);
+        }
+    }
+}
