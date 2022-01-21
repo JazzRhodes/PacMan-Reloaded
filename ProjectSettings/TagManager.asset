@@ -3,7 +3,17 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Ghost
+  - PacMan
+  - Wall
+  - ground
+  - Obstacle
+  - BombPickup
+  - Enemy
+  - ExplosionFX
+  - Bullet
+  - HealthBar
   layers:
   - Default
   - TransparentFX
@@ -16,8 +26,8 @@ TagManager:
   - Pellet
   - Obstacle
   - Node
-  - 
-  - 
+  - Bullet
+  - BodyPart
   - 
   - 
   - 
@@ -40,4 +50,10 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Entity
+    uniqueID: 722736653
+    locked: 0
+  - name: UI
+    uniqueID: 399341875
     locked: 0

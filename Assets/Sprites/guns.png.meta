@@ -21,7 +21,7 @@ TextureImporter:
     heightScale: 0.25
     normalMapFilter: 0
     flipGreenChannel: 0
-  isReadable: 0
+  isReadable: 1
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
@@ -554,7 +554,7 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      guns_16: 2125637733
+      guns_3: -1793951760
       guns_1: -1929761157
       guns_11: -1387273383
       guns_15: 1431490241
@@ -571,7 +571,7 @@ TextureImporter:
       guns_13: 836191434
       guns_12: -1513649538
       guns_9: 1211303013
-      guns_3: -1793951760
+      guns_16: 2125637733
   spritePackingTag: 
   pSDRemoveMatte: 0
   userData: 

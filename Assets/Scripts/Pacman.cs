@@ -1,13 +1,13 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-
 [RequireComponent(typeof(Movement))]
 public class Pacman : MonoBehaviour {
     public AnimatedSprite deathSequence;
     public SpriteRenderer spriteRenderer { get; private set; }
     public new Collider2D collider { get; private set; }
     public Movement movement { get; private set; }
-    bool up, down, left, right;
+    bool up, down, left, right, shoot;
+    public Gun assignedGun;
     private void Awake() {
         spriteRenderer = GetComponent<SpriteRenderer>();
         collider = GetComponent<Collider2D>();
@@ -28,12 +28,25 @@ public class Pacman : MonoBehaviour {
         float angle = Mathf.Atan2(movement.direction.y, movement.direction.x);
         transform.rotation = Quaternion.AngleAxis(angle * Mathf.Rad2Deg, Vector3.forward);
     }
-    public void OnMove(InputValue value){
+    void FixedUpdate() {
+        if (shoot) {
+            shoot = false;
+            if (assignedGun && assignedGun.ammo > 0) {
+                assignedGun.Shoot();
+            } else {
+                // do empty gun stuff
+            }
+        }
+    }
+    public void OnMove(InputValue value) {
         Vector2 _value = value.Get<Vector2>();
         up = _value.y > 0;
         down = _value.y < 0;
         left = _value.x < 0;
         right = _value.x > 0;
+    }
+    public void OnShoot(InputValue value) {
+        shoot = value.isPressed;
     }
     public void ResetState() {
         enabled = true;
@@ -54,5 +67,3 @@ public class Pacman : MonoBehaviour {
         deathSequence.Restart();
     }
 }
-
-// PacMan Reloaded A.k.a Ruined PacMan is a reimagining of PacMan with extra features added that could ultimately only end in disaster. To do: weapons and bullet-time, physics, blood, dynamic sprite slicing.

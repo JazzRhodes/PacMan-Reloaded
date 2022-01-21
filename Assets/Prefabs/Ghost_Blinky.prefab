@@ -65,6 +65,10 @@ PrefabInstance:
       value: Pacman
       objectReference: {fileID: 0}
     - target: {fileID: 3259707676119580883, guid: 2fde9760580df734b965459e729d1aba, type: 3}
+      propertyPath: deathParticles
+      value: 
+      objectReference: {fileID: 4017174787221538852, guid: 7a623bcf59747ff4b85a7000c468bf58, type: 3}
+    - target: {fileID: 3259707676119580883, guid: 2fde9760580df734b965459e729d1aba, type: 3}
       propertyPath: initialBehavior
       value: 
       objectReference: {fileID: 7420915118371691651}

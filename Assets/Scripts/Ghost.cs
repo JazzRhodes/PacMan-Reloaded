@@ -1,16 +1,23 @@
 using UnityEngine;
 using NaughtyAttributes;
+using System.Collections.Generic;
+
 [RequireComponent(typeof(Movement))]
 public class Ghost : MonoBehaviour {
     public Movement movement { get; private set; }
     public GhostHome home { get; private set; }
     public GhostScatter scatter { get; private set; }
     public GhostChase chase { get; private set; }
-    public GhostFrightened frightened { get; private set; }
+    public GhostFrightened frightened { get; set; }
     public GhostBehavior initialBehavior;
     public Transform target;
     public int points = 200;
     [Layer] public string pacmanLayer;
+    public ParticleSystem deathParticles;
+    public Explodable deathBody;
+    [Header("Camera Shake Options")]
+    public float magnitude;
+    public float roughness, fadeIn, fadeOut;
     private void Awake() {
         movement = GetComponent<Movement>();
         home = GetComponent<GhostHome>();
@@ -45,6 +52,7 @@ public class Ghost : MonoBehaviour {
                 GameManager.instance.AddGhostEatenScore(this);
                 AudioClip eatenSound = AudioManager.instance.eatGhost;
                 AudioManager.PlayOneShot(eatenSound);
+
             } else {
                 GameManager.instance.PacmanEaten();
             }

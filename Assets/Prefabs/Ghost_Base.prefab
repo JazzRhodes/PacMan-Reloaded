@@ -120,7 +120,7 @@ GameObject:
   - component: {fileID: 4156890626953723852}
   m_Layer: 7
   m_Name: Ghost_Base
-  m_TagString: Untagged
+  m_TagString: Ghost
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -215,6 +215,7 @@ MonoBehaviour:
   target: {fileID: 0}
   points: 200
   pacmanLayer: Pacman
+  deathParticles: {fileID: 4017174787221538852, guid: 7a623bcf59747ff4b85a7000c468bf58, type: 3}
 --- !u!114 &8153983311276299916
 MonoBehaviour:
   m_ObjectHideFlags: 0

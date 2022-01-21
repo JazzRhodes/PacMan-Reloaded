@@ -1,4 +1,6 @@
 using UnityEngine;
+using EZCameraShake;
+
 public class GhostFrightened : GhostBehavior {
     public SpriteRenderer body;
     public SpriteRenderer eyes;
@@ -20,7 +22,7 @@ public class GhostFrightened : GhostBehavior {
         blue.enabled = false;
         white.enabled = false;
     }
-    private void Eaten() {
+    public void Eaten() {
         eaten = true;
         ghost.SetPosition(ghost.home.inside.position);
         ghost.home.Enable(duration);
@@ -28,6 +30,19 @@ public class GhostFrightened : GhostBehavior {
         eyes.enabled = true;
         blue.enabled = false;
         white.enabled = false;
+    }
+    public void Shot() {
+        AudioManager.PlayOneShot(AudioManager.instance.gotShot);
+        Instantiate(ghost.deathParticles, transform.position, Quaternion.identity);
+        Instantiate(GameManager.instance.bloodSplatter, transform.position, Quaternion.identity);
+        var deadBody = Instantiate(ghost.deathBody, transform.position, Quaternion.identity);
+        ExplodeOnClick.Explode(deadBody, transform.position);
+        ghost.SetPosition(ghost.home.inside.position);
+        ghost.home.Enable(duration);
+        CameraShakeInstance c = CameraShaker.Instance.ShakeOnce(ghost.magnitude, ghost.roughness, ghost.fadeIn, ghost.fadeOut);
+        RipplePostProcessor.instance.CreateRipple((Vector2)transform.position);
+
+
     }
     private void Flash() {
         if (!eaten) {

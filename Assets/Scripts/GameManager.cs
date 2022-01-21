@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 public class GameManager : MonoBehaviour {
@@ -12,8 +13,24 @@ public class GameManager : MonoBehaviour {
     public int lives { get; private set; }
     public float deathSoundWait1, two;
     public bool paused, pauseInputHit;
+    public static Dictionary<GameObject, Ghost> ghostDictionary;
+    public static Dictionary<GameObject, Rigidbody2D> rigidbodiesDictionary;
+    public static Dictionary<GameObject, Collider2D> colliderDictionary;
+    public GameObject bloodSplatter;
     void Awake() {
         instance = this;
+        ghostDictionary = new Dictionary<GameObject, Ghost>();
+        rigidbodiesDictionary = new Dictionary<GameObject, Rigidbody2D>();
+        colliderDictionary = new Dictionary<GameObject, Collider2D>();
+        for (int i = 0; i < ghosts.Length; i++) {
+            ghostDictionary.Add(ghosts[i].gameObject, ghosts[i]);
+        }
+        foreach (var item in FindObjectsOfType<Rigidbody2D>(true)){
+            rigidbodiesDictionary.Add(item.gameObject, item);
+        }
+        foreach (var item in FindObjectsOfType<Collider2D>(true)){
+            colliderDictionary.Add(item.gameObject, item);
+        }
     }
     private void Start() {
         NewGame();
@@ -24,11 +41,11 @@ public class GameManager : MonoBehaviour {
         if (this.lives <= 0 && Input.anyKey) {
             NewGame();
         }
-        if(pauseInputHit){
+        if (pauseInputHit) {
             pauseInputHit = false;
             paused = !paused;
-            AudioManager.audioSource.mute = paused;
-            AudioManager.secondaryAudioSource.mute = paused;
+            AudioManager.instance.audioSource.mute = paused;
+            AudioManager.instance.secondaryAudioSource.mute = paused;
         }
         Time.timeScale = paused ? 0 : 1;
     }
