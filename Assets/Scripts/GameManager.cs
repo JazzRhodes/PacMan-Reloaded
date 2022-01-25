@@ -1,6 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using NaughtyAttributes;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.Tilemaps;
 using UnityEngine.UI;
 public class GameManager : MonoBehaviour {
@@ -21,6 +24,8 @@ public class GameManager : MonoBehaviour {
     public Tilemap destructibleWallTilemap;
     public GridLayout gridLayout;
     [Range(0, 2)] public float gameSpeed = 1;
+    [Tag] public string bodyPartTag, bloodSplatterTag;
+    public Object mainScene;
     void Awake() {
         instance = this;
         ghostDictionary = new Dictionary<GameObject, Ghost>();
@@ -44,7 +49,8 @@ public class GameManager : MonoBehaviour {
     private void Update() {
         //Gameover stuff
         if (this.lives <= 0 && Input.anyKey) {
-            NewGame();
+            //NewGame();
+            SceneManager.LoadScene(mainScene.name);
         }
         if (pauseInputHit) {
             pauseInputHit = false;
@@ -71,6 +77,7 @@ public class GameManager : MonoBehaviour {
             this.ghosts[i].ResetState();
         }
         this.pacman.ResetState();
+        CleanScene();
     }
     private void GameOver() {
         this.gameOverText.enabled = true;
@@ -102,6 +109,22 @@ public class GameManager : MonoBehaviour {
             AudioManager.PlayLoopedDelayed(sirenCold, 3.0f);
         } else {
             GameOver();
+        }
+    }
+    public void CleanScene() {
+        var rigidbodies = FindObjectsOfType<Rigidbody2D>().ToList();
+        var listOfBodyParts = new List<Rigidbody2D>();
+        var bloodSplatters = GameObject.FindGameObjectsWithTag(bloodSplatterTag);
+        foreach (var item in rigidbodies) {
+            if (item.gameObject.tag == bodyPartTag && !item.transform.parent) {
+                listOfBodyParts.Add(item);
+            }
+        }
+        for (int i = 0; i < listOfBodyParts.Count; i++) {
+            Destroy(listOfBodyParts[i].gameObject);
+        }
+        for (int i = 0; i < bloodSplatters.Length; i++) {
+            Destroy(bloodSplatters[i]);
         }
     }
     public void AddGhostEatenScore(Ghost ghost) {
@@ -147,10 +170,10 @@ public class GameManager : MonoBehaviour {
             item.gameObject.SetActive(isActive);
         }
     }
-    public void SetPaused(){
+    public void SetPaused() {
         pauseInputHit = true;
     }
-    public void QuitGame(){
+    public void QuitGame() {
         StaticExtension.QuitGame();
     }
 }
