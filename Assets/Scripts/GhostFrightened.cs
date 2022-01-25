@@ -33,6 +33,7 @@ public class GhostFrightened : GhostBehavior {
     }
     public void Shot() {
         AudioManager.PlayOneShot(AudioManager.instance.gotShot);
+        RipplePostProcessor.instance.CreateRipple(Camera.main.WorldToScreenPoint(transform.position));
         Instantiate(ghost.deathParticles, transform.position, Quaternion.identity);
         Instantiate(GameManager.instance.bloodSplatter, transform.position, Quaternion.identity);
         var deadBody = Instantiate(ghost.deathBody, transform.position, Quaternion.identity);
@@ -40,7 +41,6 @@ public class GhostFrightened : GhostBehavior {
         ghost.SetPosition(ghost.home.inside.position);
         ghost.home.Enable(duration);
         CameraShakeInstance c = CameraShaker.Instance.ShakeOnce(ghost.magnitude, ghost.roughness, ghost.fadeIn, ghost.fadeOut);
-        RipplePostProcessor.instance.CreateRipple((Vector2)transform.position);
 
 
     }

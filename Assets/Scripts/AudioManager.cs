@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Timeline;
 
@@ -19,6 +18,9 @@ public class AudioManager : MonoBehaviour {
     }
     public static void PlayOneShot(AudioClip clip) {
         instance.secondaryAudioSource.PlayOneShot(clip);
+    }
+    public static void PlayOneShot(AudioClip clip, float volume) {
+        instance.secondaryAudioSource.PlayOneShot(clip, volume);
     }
     public static IEnumerator PlayOneShotDelayed(AudioClip clip, float delay) {
         yield return new WaitForSeconds(delay);

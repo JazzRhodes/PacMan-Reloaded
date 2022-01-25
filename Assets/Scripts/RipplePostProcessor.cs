@@ -27,13 +27,13 @@ public class RipplePostProcessor : MonoBehaviour {
     [Range(0, 1)]
     public float Friction = .9f;
     private float Amount = 0f;
+    public bool onClick;
     void Awake() {
         instance = this;
     }
     void Update() {
-        if (Input.GetMouseButton(0)) {
-            Vector3 pos = Input.mousePosition;
-            CreateRipple(pos);
+        if(Input.GetMouseButtonDown(0) && onClick){
+            CreateRipple(Input.mousePosition);
         }
         RippleMaterial.SetFloat("_Amount", Amount);
         Amount *= Friction;

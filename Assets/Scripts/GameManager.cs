@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 using UnityEngine.UI;
 public class GameManager : MonoBehaviour {
     public static GameManager instance;
@@ -17,6 +18,9 @@ public class GameManager : MonoBehaviour {
     public static Dictionary<GameObject, Rigidbody2D> rigidbodiesDictionary;
     public static Dictionary<GameObject, Collider2D> colliderDictionary;
     public GameObject bloodSplatter;
+    public Tilemap destructibleWallTilemap;
+    public GridLayout gridLayout;
+    [Range(0, 2)] public float gameSpeed = 1;
     void Awake() {
         instance = this;
         ghostDictionary = new Dictionary<GameObject, Ghost>();
@@ -25,11 +29,12 @@ public class GameManager : MonoBehaviour {
         for (int i = 0; i < ghosts.Length; i++) {
             ghostDictionary.Add(ghosts[i].gameObject, ghosts[i]);
         }
-        foreach (var item in FindObjectsOfType<Rigidbody2D>(true)){
+        foreach (var item in FindObjectsOfType<Rigidbody2D>(true)) {
             rigidbodiesDictionary.Add(item.gameObject, item);
         }
-        foreach (var item in FindObjectsOfType<Collider2D>(true)){
-            colliderDictionary.Add(item.gameObject, item);
+        foreach (var item in FindObjectsOfType<Collider2D>(true)) {
+            if (!colliderDictionary.ContainsKey(item.gameObject))
+                colliderDictionary.Add(item.gameObject, item);
         }
     }
     private void Start() {
@@ -47,7 +52,7 @@ public class GameManager : MonoBehaviour {
             AudioManager.instance.audioSource.mute = paused;
             AudioManager.instance.secondaryAudioSource.mute = paused;
         }
-        Time.timeScale = paused ? 0 : 1;
+        Time.timeScale = paused ? 0 : gameSpeed;
     }
     private void NewGame() {
         SetScore(0);
@@ -141,5 +146,11 @@ public class GameManager : MonoBehaviour {
         foreach (var item in ghosts) {
             item.gameObject.SetActive(isActive);
         }
+    }
+    public void SetPaused(){
+        pauseInputHit = true;
+    }
+    public void QuitGame(){
+        StaticExtension.QuitGame();
     }
 }

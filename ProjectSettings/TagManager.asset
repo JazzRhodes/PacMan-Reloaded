@@ -4,16 +4,16 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Ghost
-  - PacMan
-  - Wall
   - ground
   - Obstacle
   - BombPickup
+  - Ghost
   - Enemy
+  - PacMan
   - ExplosionFX
   - Bullet
   - HealthBar
+  - Wall
   layers:
   - Default
   - TransparentFX
@@ -48,12 +48,21 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Background
+    uniqueID: 709346897
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: Entity
-    uniqueID: 722736653
+  - name: Props
+    uniqueID: 1886970829
     locked: 0
-  - name: UI
-    uniqueID: 399341875
+  - name: Player
+    uniqueID: 1388919113
+    locked: 0
+  - name: Gun
+    uniqueID: 3296357593
+    locked: 0
+  - name: Overlay
+    uniqueID: 1627387829
     locked: 0
