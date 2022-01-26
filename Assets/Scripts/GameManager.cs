@@ -25,7 +25,7 @@ public class GameManager : MonoBehaviour {
     public GridLayout gridLayout;
     [Range(0, 2)] public float gameSpeed = 1;
     [Tag] public string bodyPartTag, bloodSplatterTag;
-    public Object mainScene;
+    [Scene] public string mainScene;
     void Awake() {
         instance = this;
         ghostDictionary = new Dictionary<GameObject, Ghost>();
@@ -50,7 +50,7 @@ public class GameManager : MonoBehaviour {
         //Gameover stuff
         if (this.lives <= 0 && Input.anyKey) {
             //NewGame();
-            SceneManager.LoadScene(mainScene.name);
+            SceneManager.LoadScene(mainScene);
         }
         if (pauseInputHit) {
             pauseInputHit = false;

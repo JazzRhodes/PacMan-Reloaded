@@ -1600,7 +1600,7 @@ MonoBehaviour:
   gameSpeed: 1
   bodyPartTag: BodyPart
   bloodSplatterTag: BloodSplatter
-  mainScene: {fileID: 102900000, guid: 5de9d881d9573dd4f9d0275c2a3d0ded, type: 3}
+  mainScene: Pacman
 --- !u!4 &469897152
 Transform:
   m_ObjectHideFlags: 0
@@ -17139,7 +17139,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1981269768}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4f231c4fb786f3946a6b90b886c48677, type: 3}
   m_Name: 
