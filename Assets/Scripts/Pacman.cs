@@ -39,7 +39,7 @@ public class Pacman : MonoBehaviour {
         }
     }
     public void OnShoot(InputValue value) {
-        if (assignedGun && !GameManager.instance.paused) {
+        if (assignedGun && !GameManager.instance.paused && enabled) {
             assignedGun.triggerDown = value.isPressed;
             assignedGun.triggerHeld = value.isPressed;
         }

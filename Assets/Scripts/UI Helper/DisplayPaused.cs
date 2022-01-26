@@ -8,7 +8,6 @@ public class DisplayPaused : MonoBehaviour {
     void Awake() {
         instance = this;
     }
-    
     void Update() {
         foreach (var item in pauseScreenElements) {
             item.SetActive(GameManager.instance.paused);
