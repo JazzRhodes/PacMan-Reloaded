@@ -23,6 +23,15 @@ public class GhostFrightened : GhostBehavior {
         white.enabled = false;
     }
     public void Eaten() {
+        StartCoroutine(GameManager.PauseTime(GameManager.instance.onEatWait));
+        var comboText = Instantiate(GameManager.instance.comboTextPrefab);
+        comboText.transform.parent = GameManager.instance.screenSpaceCanvas.transform;
+        comboText.transform.localScale = GameManager.instance.comboTextPrefab.transform.localScale;
+        comboText.text = ghost.pointsAdded.ToString();
+        StartCoroutine(StaticExtension.DestroyRealtime(comboText.gameObject, GameManager.instance.onEatWait));
+        Vector3 pos = transform.position;
+        pos.z = 0;
+        comboText.transform.position = pos + GameManager.instance.comboTextPosOffset;
         eaten = true;
         ghost.SetPosition(ghost.home.inside.position);
         ghost.home.Enable(duration);

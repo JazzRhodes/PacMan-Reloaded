@@ -9,4 +9,9 @@ public static class StaticExtension {
         Application.Quit();
 #endif
     }
+
+    public static IEnumerator DestroyRealtime(GameObject objectToDestroy, float time){
+        yield return new WaitForSecondsRealtime(time);
+        GameObject.Destroy(objectToDestroy);
+    }
 }

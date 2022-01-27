@@ -16,7 +16,7 @@ public class GameManager : MonoBehaviour {
     public int score { get; private set; }
     public int lives { get; private set; }
     public float deathSoundWait1, two;
-    public bool paused, pauseInputHit;
+    public bool paused, pausedTime, pauseInputHit;
     public static Dictionary<GameObject, Ghost> ghostDictionary;
     public static Dictionary<GameObject, Rigidbody2D> rigidbodiesDictionary;
     public static Dictionary<GameObject, Collider2D> colliderDictionary;
@@ -26,6 +26,10 @@ public class GameManager : MonoBehaviour {
     [Range(0, 2)] public float gameSpeed = 1;
     [Tag] public string bodyPartTag, bloodSplatterTag;
     [Scene] public string mainScene;
+    public float onEatWait = 1f;
+    public Text comboTextPrefab;
+    public Canvas worldSpaceCanvas, screenSpaceCanvas;
+    public Vector3 comboTextPosOffset;
     void Awake() {
         instance = this;
         ghostDictionary = new Dictionary<GameObject, Ghost>();
@@ -58,7 +62,9 @@ public class GameManager : MonoBehaviour {
             AudioManager.instance.audioSource.mute = paused;
             AudioManager.instance.secondaryAudioSource.mute = paused;
         }
-        Time.timeScale = paused ? 0 : gameSpeed;
+        if (!pausedTime){
+            Time.timeScale = paused ? 0 : gameSpeed;
+        }
     }
     private void NewGame() {
         SetScore(0);
@@ -127,9 +133,8 @@ public class GameManager : MonoBehaviour {
             Destroy(bloodSplatters[i]);
         }
     }
-    public void AddGhostEatenScore(Ghost ghost) {
-        int points = ghost.points * this.ghostMultiplier;
-        SetScore(this.score + points);
+    public void AddGhostEatenScore(Ghost ghost, int pointsToAdd) {
+        SetScore(this.score + pointsToAdd);
         this.ghostMultiplier++;
     }
     public static void PelletEaten(Pellet pellet) {
@@ -175,5 +180,14 @@ public class GameManager : MonoBehaviour {
     }
     public void QuitGame() {
         StaticExtension.QuitGame();
+    }
+
+    public static IEnumerator PauseTime(float seconds) {
+        GameManager.instance.pausedTime = true;
+        float previousGameSpeed = GameManager.instance.gameSpeed;
+        Time.timeScale = 0;
+        yield return new WaitForSecondsRealtime(seconds);
+        Time.timeScale = previousGameSpeed;
+        GameManager.instance.pausedTime = false;
     }
 }

@@ -1,7 +1,6 @@
 using UnityEngine;
 using NaughtyAttributes;
 using System.Collections.Generic;
-
 [RequireComponent(typeof(Movement))]
 public class Ghost : MonoBehaviour {
     public Movement movement { get; private set; }
@@ -18,6 +17,7 @@ public class Ghost : MonoBehaviour {
     [Header("Camera Shake Options")]
     public float magnitude;
     public float roughness, fadeIn, fadeOut;
+    public int pointsAdded { get; set; }
     private void Awake() {
         movement = GetComponent<Movement>();
         home = GetComponent<GhostHome>();
@@ -27,6 +27,9 @@ public class Ghost : MonoBehaviour {
     }
     private void Start() {
         ResetState();
+    }
+    void Update() {
+        pointsAdded = points * GameManager.instance.ghostMultiplier;
     }
     public void ResetState() {
         gameObject.SetActive(true);
@@ -49,10 +52,9 @@ public class Ghost : MonoBehaviour {
     private void OnCollisionEnter2D(Collision2D collision) {
         if (collision.gameObject.layer == LayerMask.NameToLayer(pacmanLayer)) {
             if (frightened.enabled) {
-                GameManager.instance.AddGhostEatenScore(this);
+                GameManager.instance.AddGhostEatenScore(this, pointsAdded);
                 AudioClip eatenSound = AudioManager.instance.eatGhost;
                 AudioManager.PlayOneShot(eatenSound);
-
             } else {
                 GameManager.instance.PacmanEaten();
             }

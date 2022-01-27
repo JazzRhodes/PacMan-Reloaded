@@ -1592,6 +1592,7 @@ MonoBehaviour:
   deathSoundWait1: 1.75
   two: 0.2
   paused: 0
+  pausedTime: 0
   pauseInputHit: 0
   bloodSplatter: {fileID: 1892017039265923458, guid: 48a878a2a3759b545a8ba4f3cea0307d,
     type: 3}
@@ -1601,6 +1602,12 @@ MonoBehaviour:
   bodyPartTag: BodyPart
   bloodSplatterTag: BloodSplatter
   mainScene: Pacman
+  onEatWait: 0.75
+  comboTextPrefab: {fileID: 4820332432989273538, guid: 0bd0bb967682c6b478a1b1f75c613dd4,
+    type: 3}
+  worldSpaceCanvas: {fileID: 2065495718}
+  screenSpaceCanvas: {fileID: 1889639608}
+  comboTextPosOffset: {x: 0, y: 2, z: 0}
 --- !u!4 &469897152
 Transform:
   m_ObjectHideFlags: 0
