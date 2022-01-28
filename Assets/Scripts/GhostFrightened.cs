@@ -1,6 +1,5 @@
 using UnityEngine;
 using EZCameraShake;
-
 public class GhostFrightened : GhostBehavior {
     public SpriteRenderer body;
     public SpriteRenderer eyes;
@@ -24,14 +23,7 @@ public class GhostFrightened : GhostBehavior {
     }
     public void Eaten() {
         StartCoroutine(GameManager.PauseTime(GameManager.instance.onEatWait));
-        var comboText = Instantiate(GameManager.instance.comboTextPrefab);
-        comboText.transform.parent = GameManager.instance.screenSpaceCanvas.transform;
-        comboText.transform.localScale = GameManager.instance.comboTextPrefab.transform.localScale;
-        comboText.text = ghost.pointsAdded.ToString();
-        StartCoroutine(StaticExtension.DestroyRealtime(comboText.gameObject, GameManager.instance.onEatWait));
-        Vector3 pos = transform.position;
-        pos.z = 0;
-        comboText.transform.position = pos + GameManager.instance.comboTextPosOffset;
+        GameManager.ShowText(ghost.pointsAdded.ToString(), transform.position + GameManager.instance.comboTextPosOffset, GameManager.instance.onEatWait);
         eaten = true;
         ghost.SetPosition(ghost.home.inside.position);
         ghost.home.Enable(duration);
@@ -41,7 +33,7 @@ public class GhostFrightened : GhostBehavior {
         white.enabled = false;
     }
     public void Shot() {
-        AudioManager.PlayOneShot(AudioManager.instance.gotShot);
+        GameManager.Shot(ghost);
         RipplePostProcessor.instance.CreateRipple(Camera.main.WorldToScreenPoint(transform.position));
         Instantiate(ghost.deathParticles, transform.position, Quaternion.identity);
         Instantiate(GameManager.instance.bloodSplatter, transform.position, Quaternion.identity);
@@ -50,8 +42,6 @@ public class GhostFrightened : GhostBehavior {
         ghost.SetPosition(ghost.home.inside.position);
         ghost.home.Enable(duration);
         CameraShakeInstance c = CameraShaker.Instance.ShakeOnce(ghost.magnitude, ghost.roughness, ghost.fadeIn, ghost.fadeOut);
-
-
     }
     private void Flash() {
         if (!eaten) {
