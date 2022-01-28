@@ -1706,8 +1706,7 @@ MonoBehaviour:
   - Single Kill
   - Double Kill
   - Triple Kill
-  - Goddamn
-  - What the Fuck dude!?
+  - Combo
 --- !u!4 &469897152
 Transform:
   m_ObjectHideFlags: 0

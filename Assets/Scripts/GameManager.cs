@@ -252,7 +252,7 @@ public class GameManager : MonoBehaviour {
         int killComboScore = killCombo * GameManager.instance.killComboBonus;
         SetScore(GameManager.instance.score + killComboScore);
         if (killCombo > 1) {
-            bool comboOverMessageCount = killCombo > GameManager.instance.comboNames.Count;
+            bool comboOverMessageCount = killCombo >= GameManager.instance.comboNames.Count;
             string comboAsNumber = killCombo.ToString();
             string killComboMessage = comboAsNumber;
             string currentComboName = "";

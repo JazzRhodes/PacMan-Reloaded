@@ -22,8 +22,8 @@ public class GhostFrightened : GhostBehavior {
         white.enabled = false;
     }
     public void Eaten() {
+        GameManager.ShowText(ghost.pointsAdded.ToString(), transform.position + GameManager.instance.comboTextPosOffset, GameManager.instance.onEatWait, false, true, true);
         StartCoroutine(GameManager.PauseTime(GameManager.instance.onEatWait));
-        GameManager.ShowText(ghost.pointsAdded.ToString(), transform.position + GameManager.instance.comboTextPosOffset, GameManager.instance.onEatWait);
         eaten = true;
         ghost.SetPosition(ghost.home.inside.position);
         ghost.home.Enable(duration);
