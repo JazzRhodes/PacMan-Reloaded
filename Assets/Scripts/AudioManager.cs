@@ -11,6 +11,7 @@ public class AudioManager : MonoBehaviour {
     public AudioClip powerPelletSiren, retreatSiren;
     public AudioClip eatPellet, eatPowerPellet, eatGhost, eatFruit;
     public AudioClip death, death2, gotShot;
+    public AudioClip explosion;
     public static AudioClip lastClip;
     void Awake() {
         instance = this;

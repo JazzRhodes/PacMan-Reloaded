@@ -32,17 +32,6 @@ public class GhostFrightened : GhostBehavior {
         blue.enabled = false;
         white.enabled = false;
     }
-    public void Shot() {
-        GameManager.Shot(ghost);
-        RipplePostProcessor.instance.CreateRipple(Camera.main.WorldToScreenPoint(transform.position));
-        Instantiate(ghost.deathParticles, transform.position, Quaternion.identity);
-        Instantiate(GameManager.instance.bloodSplatter, transform.position, Quaternion.identity);
-        var deadBody = Instantiate(ghost.deathBody, transform.position, Quaternion.identity);
-        ExplodeOnClick.Explode(deadBody, transform.position);
-        ghost.SetPosition(ghost.home.inside.position);
-        ghost.home.Enable(duration);
-        CameraShakeInstance c = CameraShaker.Instance.ShakeOnce(ghost.magnitude, ghost.roughness, ghost.fadeIn, ghost.fadeOut);
-    }
     private void Flash() {
         if (!eaten) {
             blue.enabled = false;

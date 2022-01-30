@@ -3,10 +3,10 @@ using NaughtyAttributes;
 using System.Collections.Generic;
 [RequireComponent(typeof(Movement))]
 public class Ghost : MonoBehaviour {
-    public Movement movement { get; private set; }
-    public GhostHome home { get; private set; }
-    public GhostScatter scatter { get; private set; }
-    public GhostChase chase { get; private set; }
+    public Movement movement { get; set; }
+    public GhostHome home { get; set; }
+    public GhostScatter scatter { get; set; }
+    public GhostChase chase { get; set; }
     public GhostFrightened frightened { get; set; }
     public GhostBehavior initialBehavior;
     public Transform target;

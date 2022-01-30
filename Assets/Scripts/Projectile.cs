@@ -20,14 +20,11 @@ public class Projectile : MonoBehaviour {
     void FixedUpdate() {
         var hitWall = Physics2D.CircleCast(transform.position, destructionRadius, transform.right, rayDist, rayLayerMask);
         if (hitWall) {
-            DestroyWall(hitWall.point);
+            GameManager.DestroyWall(hitWall.point);
             //Destroy(gameObject);
         }
     }
-    void DestroyWall(Vector3 position) {
-        Vector3Int pos = GameManager.instance.gridLayout.WorldToCell(position);
-        GameManager.instance.destructibleWallTilemap.SetTile(pos, null);
-    }
+    
     void OnCollisionEnter2D(Collision2D other) {
         if (ignoreCollisionTags.Contains(other.gameObject.tag)) {
             Physics2D.IgnoreCollision(other.collider, collider2D);
@@ -35,16 +32,16 @@ public class Projectile : MonoBehaviour {
         if (wallTags.Contains(other.gameObject.tag) && GameManager.instance.destructibleWallTilemap && destroysWalls) {
             //var objs = Physics2D.OverlapCircleAll(transform.position, destructionRadius);
             foreach (var item in other.contacts) {
-                DestroyWall(item.point);
+                GameManager.DestroyWall(item.point);
             }
         }
         if (GameManager.ghostDictionary.ContainsKey(other.gameObject)) {
-            GameManager.ghostDictionary[other.gameObject].frightened.Shot();
+            GameManager.Shot(GameManager.ghostDictionary[other.gameObject], GameManager.ghostDictionary[other.gameObject].frightened.duration);
         }
         if (collisionTags.Contains(other.gameObject.tag)) {
             if (collisionTagsDestroysWalls && GameManager.instance.destructibleWallTilemap) {
                 foreach (var item in other.contacts) {
-                    DestroyWall(item.point);
+                    GameManager.DestroyWall(item.point);
                 }
             }
             Destroy(gameObject);

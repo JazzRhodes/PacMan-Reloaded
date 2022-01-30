@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Tilemaps;
 using UnityEngine.UI;
+using EZCameraShake;
 public class GameManager : MonoBehaviour {
     public static GameManager instance;
     public Ghost[] ghosts;
@@ -41,6 +42,8 @@ public class GameManager : MonoBehaviour {
     List<FadingTexts> fadingTexts;
     public bool useComboNames = true;
     public List<string> comboNames;
+    public Explosion explosionPrefab;
+    public bool explodeOnClick;
     void Awake() {
         instance = this;
         fadingTexts = new List<FadingTexts>();
@@ -88,6 +91,9 @@ public class GameManager : MonoBehaviour {
                     fadingTexts.RemoveAt(i);
                 }
             }
+        }
+        if(explodeOnClick && Input.GetMouseButtonDown(0)){
+            Explosion.ExplodeOnClick(Camera.main.ScreenToWorldPoint(Input.mousePosition));
         }
     }
     private void NewGame() {
@@ -243,7 +249,7 @@ public class GameManager : MonoBehaviour {
         }
         killCombo = 0;
     }
-    public static void Shot(Ghost ghost) {
+    public static void Shot(Ghost ghost, float duration) {
         killCombo++;
         if (GameManager.instance.killComboCoroutine != null) {
             GameManager.instance.StopCoroutine(GameManager.instance.killComboCoroutine);
@@ -266,11 +272,24 @@ public class GameManager : MonoBehaviour {
                     killComboMessage = lastComboName + " - " + comboAsNumber;
                 }
             }
-            string message = (killComboMessage + " = " +  killComboScore).ToString();
+            string message = (killComboMessage + " = " + killComboScore).ToString();
             Vector3 pos = ghost.transform.position + GameManager.instance.comboTextPosOffset;
             float time = GameManager.instance.killComboTimer;
             ShowText(message, pos, time, true, true);
         }
         AudioManager.PlayOneShot(AudioManager.instance.gotShot);
+        RipplePostProcessor.instance.CreateRipple(Camera.main.WorldToScreenPoint(ghost.transform.position));
+        Instantiate(ghost.deathParticles, ghost.transform.position, Quaternion.identity);
+        Instantiate(GameManager.instance.bloodSplatter, ghost.transform.position, Quaternion.identity);
+        var deadBody = Instantiate(ghost.deathBody, ghost.transform.position, Quaternion.identity);
+        ExplodeOnClick.Explode(deadBody, ghost.transform.position);
+        ghost.SetPosition(ghost.home.inside.position);
+        ghost.home.Enable(duration);
+        CameraShakeInstance c = CameraShaker.Instance.ShakeOnce(ghost.magnitude, ghost.roughness, ghost.fadeIn, ghost.fadeOut);
+    }
+
+    public static void DestroyWall(Vector3 position) {
+        Vector3Int pos = GameManager.instance.gridLayout.WorldToCell(position);
+        GameManager.instance.destructibleWallTilemap.SetTile(pos, null);
     }
 }
