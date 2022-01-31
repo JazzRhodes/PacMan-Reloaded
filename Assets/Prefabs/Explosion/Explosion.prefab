@@ -4890,6 +4890,12 @@ MonoBehaviour:
   fadeIn: 0
   fadeOut: 1
   wallTag: Wall
+  volume: 1
+  eForceRadius: 10
+  eForceAmount: 10
+  eForceLayerMask:
+    serializedVersion: 2
+    m_Bits: 4096
 --- !u!1001 &4959682187915389966
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4905,6 +4911,11 @@ PrefabInstance:
     - target: {fileID: 9078875853604592200, guid: e4df2673325bfab44a5496ed8fffedce,
         type: 3}
       propertyPath: SubModule.enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9078875853604592200, guid: e4df2673325bfab44a5496ed8fffedce,
+        type: 3}
+      propertyPath: CollisionModule.collisionMessages
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9078875853604592200, guid: e4df2673325bfab44a5496ed8fffedce,
@@ -4984,6 +4995,36 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e4df2673325bfab44a5496ed8fffedce, type: 3}
+--- !u!1 &4119370687062111808 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9078875853604592206, guid: e4df2673325bfab44a5496ed8fffedce,
+    type: 3}
+  m_PrefabInstance: {fileID: 4959682187915389966}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2003671455655225709
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4119370687062111808}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f93a9f3beeaa33c4ab99641e14c73b75, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  killsGhosts: 0
+  magnitude: 0
+  roughness: 0
+  fadeIn: 0
+  fadeOut: 0
+  wallTag: Wall
+  volume: 1
+  eForceRadius: 0
+  eForceAmount: 0
+  eForceLayerMask:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!4 &4119370687062111813 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9078875853604592203, guid: e4df2673325bfab44a5496ed8fffedce,

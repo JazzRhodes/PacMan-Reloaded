@@ -5198,9 +5198,9 @@ RectTransform:
   m_Father: {fileID: 854108205}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 80, y: -141.73999}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &823155227
@@ -5526,6 +5526,18 @@ Mesh:
     offset: 0
     size: 0
     path: 
+--- !u!114 &899787348 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1911833988957054521, guid: b6894cca0173e8041bba0e4a8be5fde1,
+    type: 3}
+  m_PrefabInstance: {fileID: 6038318316664210395}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb02e86574c98b342882a0347e41449e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &918157308
 GameObject:
   m_ObjectHideFlags: 0
@@ -5971,18 +5983,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1108034783 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2200801461864712012, guid: b6894cca0173e8041bba0e4a8be5fde1,
-    type: 3}
-  m_PrefabInstance: {fileID: 6038318316664210395}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cb02e86574c98b342882a0347e41449e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!43 &1124553566
 Mesh:
   m_ObjectHideFlags: 0
@@ -6992,9 +6992,9 @@ RectTransform:
   m_Father: {fileID: 854108205}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 80, y: -15}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1378808236
@@ -14342,7 +14342,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1889639606
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18094,7 +18094,7 @@ PrefabInstance:
         type: 3}
       propertyPath: assignedGun
       value: 
-      objectReference: {fileID: 1108034783}
+      objectReference: {fileID: 899787348}
     - target: {fileID: 6038318316045854524, guid: b6894cca0173e8041bba0e4a8be5fde1,
         type: 3}
       propertyPath: m_RootOrder

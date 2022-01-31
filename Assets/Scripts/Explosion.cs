@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using EZCameraShake;
 using NaughtyAttributes;
-
 public class Explosion : MonoBehaviour {
     public bool killsGhosts = true;
     [Header("Camera Shake Options")]
@@ -13,6 +12,8 @@ public class Explosion : MonoBehaviour {
     List<ParticleCollisionEvent> particleCollisionEvents;
     ParticleSystem pSystem;
     [Range(0, 1)] public float volume = 1f;
+    public float eForceRadius, eForceAmount;
+    public LayerMask eForceLayerMask;
     void Awake() {
         pSystem = GetComponent<ParticleSystem>();
         particleCollisionEvents = new List<ParticleCollisionEvent>();
@@ -36,10 +37,15 @@ public class Explosion : MonoBehaviour {
         RipplePostProcessor.instance.CreateRipple(Camera.main.WorldToScreenPoint(pos));
         CameraShakeInstance c = CameraShaker.Instance.ShakeOnce(magnitude, roughness, fadeIn, fadeOut);
         AudioManager.PlayOneShot(AudioManager.instance.explosion);
-    }
-    public static void ExplodeOnClick(Vector3 pos) {
-        var pre = Instantiate(
-        GameManager.instance.explosionPrefab);
-        pre.Explode(pos);
+        var bodies = Physics2D.OverlapCircleAll(transform.position, eForceRadius, eForceLayerMask);
+        foreach (var item in bodies) {
+            Vector2 dir = (item.transform.position - transform.position).normalized;
+            float distance = Vector2.Distance(item.transform.position, transform.position);
+            if (distance <= 0) {
+                distance = 0.00001f;
+            }
+            float amount = eForceAmount / distance;
+            item.attachedRigidbody.AddForce(dir * amount, ForceMode2D.Impulse);
+        }
     }
 }

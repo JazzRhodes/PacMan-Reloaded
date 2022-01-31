@@ -92,8 +92,8 @@ public class GameManager : MonoBehaviour {
                 }
             }
         }
-        if(explodeOnClick && Input.GetMouseButtonDown(0)){
-            Explosion.ExplodeOnClick(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+        if (explodeOnClick && Input.GetMouseButtonDown(0)) {
+            InstantiateExplosionOnClick(Camera.main.ScreenToWorldPoint(Input.mousePosition));
         }
     }
     private void NewGame() {
@@ -287,9 +287,13 @@ public class GameManager : MonoBehaviour {
         ghost.home.Enable(duration);
         CameraShakeInstance c = CameraShaker.Instance.ShakeOnce(ghost.magnitude, ghost.roughness, ghost.fadeIn, ghost.fadeOut);
     }
-
     public static void DestroyWall(Vector3 position) {
         Vector3Int pos = GameManager.instance.gridLayout.WorldToCell(position);
         GameManager.instance.destructibleWallTilemap.SetTile(pos, null);
+    }
+    public static void InstantiateExplosionOnClick(Vector3 pos) {
+        var pre = Instantiate(
+        GameManager.instance.explosionPrefab);
+        pre.Explode(pos);
     }
 }

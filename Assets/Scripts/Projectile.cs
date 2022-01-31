@@ -24,27 +24,28 @@ public class Projectile : MonoBehaviour {
             //Destroy(gameObject);
         }
     }
-    
     void OnCollisionEnter2D(Collision2D other) {
-        if (ignoreCollisionTags.Contains(other.gameObject.tag)) {
-            Physics2D.IgnoreCollision(other.collider, collider2D);
-        }
-        if (wallTags.Contains(other.gameObject.tag) && GameManager.instance.destructibleWallTilemap && destroysWalls) {
-            //var objs = Physics2D.OverlapCircleAll(transform.position, destructionRadius);
-            foreach (var item in other.contacts) {
-                GameManager.DestroyWall(item.point);
+        if (enabled) {
+            if (ignoreCollisionTags.Contains(other.gameObject.tag)) {
+                Physics2D.IgnoreCollision(other.collider, collider2D);
             }
-        }
-        if (GameManager.ghostDictionary.ContainsKey(other.gameObject)) {
-            GameManager.Shot(GameManager.ghostDictionary[other.gameObject], GameManager.ghostDictionary[other.gameObject].frightened.duration);
-        }
-        if (collisionTags.Contains(other.gameObject.tag)) {
-            if (collisionTagsDestroysWalls && GameManager.instance.destructibleWallTilemap) {
+            if (wallTags.Contains(other.gameObject.tag) && GameManager.instance.destructibleWallTilemap && destroysWalls) {
+                //var objs = Physics2D.OverlapCircleAll(transform.position, destructionRadius);
                 foreach (var item in other.contacts) {
                     GameManager.DestroyWall(item.point);
                 }
             }
-            Destroy(gameObject);
+            if (GameManager.ghostDictionary.ContainsKey(other.gameObject)) {
+                GameManager.Shot(GameManager.ghostDictionary[other.gameObject], GameManager.ghostDictionary[other.gameObject].frightened.duration);
+            }
+            if (collisionTags.Contains(other.gameObject.tag)) {
+                if (collisionTagsDestroysWalls && GameManager.instance.destructibleWallTilemap) {
+                    foreach (var item in other.contacts) {
+                        GameManager.DestroyWall(item.point);
+                    }
+                }
+                Destroy(gameObject);
+            }
         }
     }
     void OnDestroy() {
