@@ -17,7 +17,8 @@ public class GameManager : MonoBehaviour {
     public int score { get; private set; }
     public int lives { get; private set; }
     public float deathSoundWait1, two;
-    public bool paused, pausedTime, pauseInputHit;
+    public bool paused, pauseInputHit;
+    public bool haltTime;
     public static Dictionary<GameObject, Ghost> ghostDictionary;
     public static Dictionary<GameObject, Rigidbody2D> rigidbodiesDictionary;
     public static Dictionary<GameObject, Collider2D> colliderDictionary;
@@ -46,7 +47,11 @@ public class GameManager : MonoBehaviour {
     public bool explodeOnClick;
     [Layer] public string homeLayer;
     public float campTime;
+    public float slowMoTime = 0.4f;
+    float normalGameSpeed;
+    public bool slowMo { get; set; }
     void Awake() {
+        normalGameSpeed = gameSpeed;
         instance = this;
         fadingTexts = new List<FadingTexts>();
         killCombo = 0;
@@ -80,8 +85,11 @@ public class GameManager : MonoBehaviour {
             AudioManager.instance.audioSource.mute = paused;
             AudioManager.instance.secondaryAudioSource.mute = paused;
         }
-        if (!pausedTime) {
+        if (!haltTime) {
             Time.timeScale = paused ? 0 : gameSpeed;
+            if (slowMo) {
+                Time.timeScale = slowMoTime;
+            }
         }
         for (int i = 0; i < fadingTexts.Count; i++) {
             if (fadingTexts[i].text) {
@@ -214,12 +222,12 @@ public class GameManager : MonoBehaviour {
         StaticExtension.QuitGame();
     }
     public static IEnumerator PauseTime(float seconds) {
-        GameManager.instance.pausedTime = true;
+        GameManager.instance.haltTime = true;
         float previousGameSpeed = GameManager.instance.gameSpeed;
         Time.timeScale = 0;
         yield return new WaitForSecondsRealtime(seconds);
         Time.timeScale = previousGameSpeed;
-        GameManager.instance.pausedTime = false;
+        GameManager.instance.haltTime = false;
     }
     public static void ShowText(string message, Vector3 position, float displayTime, bool fade = false, bool worldSpace = false, bool destroyRealtime = false) {
         var comboText = Instantiate(GameManager.instance.comboTextPrefab);
@@ -297,5 +305,8 @@ public class GameManager : MonoBehaviour {
         var pre = Instantiate(
         GameManager.instance.explosionPrefab);
         pre.Explode(pos);
+    }
+    public void ChangeGameSpeed(float newSpeed) {
+
     }
 }

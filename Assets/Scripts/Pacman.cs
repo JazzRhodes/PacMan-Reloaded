@@ -9,6 +9,7 @@ public class Pacman : MonoBehaviour {
     public Movement movement { get; private set; }
     bool up, down, left, right;
     public Gun assignedGun;
+    bool slowMoInput;
     private void Awake() {
         spriteRenderer = GetComponent<SpriteRenderer>();
         collider = GetComponent<Collider2D>();
@@ -28,6 +29,7 @@ public class Pacman : MonoBehaviour {
         // Rotate pacman to face the movement direction
         float angle = Mathf.Atan2(movement.direction.y, movement.direction.x);
         transform.rotation = Quaternion.AngleAxis(angle * Mathf.Rad2Deg, Vector3.forward);
+        GameManager.instance.slowMo = slowMoInput;
     }
     public void OnMove(InputValue value) {
         if (!GameManager.instance.paused) {
@@ -47,6 +49,9 @@ public class Pacman : MonoBehaviour {
     public void OnPause(InputValue value) {
         GameManager.instance.pauseInputHit = true;
         EventSystem.current.SetSelectedGameObject(DisplayPaused.instance.firstSelected);
+    }
+    void OnSlowMotion(InputValue value){
+        slowMoInput = value.isPressed;
     }
     public void ResetState() {
         enabled = true;

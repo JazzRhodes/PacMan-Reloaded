@@ -53,6 +53,15 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SlowMotion"",
+                    ""type"": ""PassThrough"",
+                    ""id"": ""704dfb0f-f03a-4727-86d0-ea9fd6e3575a"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -242,6 +251,17 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                     ""action"": ""Pause"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""08cf0851-7f68-42a2-95c4-6124ce7b25b7"",
+                    ""path"": ""<Keyboard>/leftCtrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SlowMotion"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -281,6 +301,7 @@ public partial class @Controls : IInputActionCollection2, IDisposable
         m_Default_Move = m_Default.FindAction("Move", throwIfNotFound: true);
         m_Default_Shoot = m_Default.FindAction("Shoot", throwIfNotFound: true);
         m_Default_Pause = m_Default.FindAction("Pause", throwIfNotFound: true);
+        m_Default_SlowMotion = m_Default.FindAction("SlowMotion", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -343,6 +364,7 @@ public partial class @Controls : IInputActionCollection2, IDisposable
     private readonly InputAction m_Default_Move;
     private readonly InputAction m_Default_Shoot;
     private readonly InputAction m_Default_Pause;
+    private readonly InputAction m_Default_SlowMotion;
     public struct DefaultActions
     {
         private @Controls m_Wrapper;
@@ -350,6 +372,7 @@ public partial class @Controls : IInputActionCollection2, IDisposable
         public InputAction @Move => m_Wrapper.m_Default_Move;
         public InputAction @Shoot => m_Wrapper.m_Default_Shoot;
         public InputAction @Pause => m_Wrapper.m_Default_Pause;
+        public InputAction @SlowMotion => m_Wrapper.m_Default_SlowMotion;
         public InputActionMap Get() { return m_Wrapper.m_Default; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -368,6 +391,9 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                 @Pause.started -= m_Wrapper.m_DefaultActionsCallbackInterface.OnPause;
                 @Pause.performed -= m_Wrapper.m_DefaultActionsCallbackInterface.OnPause;
                 @Pause.canceled -= m_Wrapper.m_DefaultActionsCallbackInterface.OnPause;
+                @SlowMotion.started -= m_Wrapper.m_DefaultActionsCallbackInterface.OnSlowMotion;
+                @SlowMotion.performed -= m_Wrapper.m_DefaultActionsCallbackInterface.OnSlowMotion;
+                @SlowMotion.canceled -= m_Wrapper.m_DefaultActionsCallbackInterface.OnSlowMotion;
             }
             m_Wrapper.m_DefaultActionsCallbackInterface = instance;
             if (instance != null)
@@ -381,6 +407,9 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                 @Pause.started += instance.OnPause;
                 @Pause.performed += instance.OnPause;
                 @Pause.canceled += instance.OnPause;
+                @SlowMotion.started += instance.OnSlowMotion;
+                @SlowMotion.performed += instance.OnSlowMotion;
+                @SlowMotion.canceled += instance.OnSlowMotion;
             }
         }
     }
@@ -408,5 +437,6 @@ public partial class @Controls : IInputActionCollection2, IDisposable
         void OnMove(InputAction.CallbackContext context);
         void OnShoot(InputAction.CallbackContext context);
         void OnPause(InputAction.CallbackContext context);
+        void OnSlowMotion(InputAction.CallbackContext context);
     }
 }
