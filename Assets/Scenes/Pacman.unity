@@ -1565,6 +1565,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: Ghost_Inky
       objectReference: {fileID: 0}
+    - target: {fileID: 2430120178087035490, guid: 8398b287235293d469d1683369c48531,
+        type: 3}
+      propertyPath: speed
+      value: 700
+      objectReference: {fileID: 0}
+    - target: {fileID: 5058308114681254252, guid: 8398b287235293d469d1683369c48531,
+        type: 3}
+      propertyPath: layer
+      value: Default
+      objectReference: {fileID: 0}
     - target: {fileID: 5058308114681254252, guid: 8398b287235293d469d1683369c48531,
         type: 3}
       propertyPath: inside
@@ -1709,6 +1719,8 @@ MonoBehaviour:
   - Combo
   explosionPrefab: {fileID: 712720408, guid: b9332e93d19dfa749ae0472630931c8c, type: 3}
   explodeOnClick: 0
+  homeLayer: Obstacle
+  campTime: 1
 --- !u!4 &469897152
 Transform:
   m_ObjectHideFlags: 0
@@ -13929,6 +13941,11 @@ PrefabInstance:
       objectReference: {fileID: 2041882834}
     - target: {fileID: 1340345220604751223, guid: 0d1f951e4ac24fe478d688dbf86a5c39,
         type: 3}
+      propertyPath: layer
+      value: Default
+      objectReference: {fileID: 0}
+    - target: {fileID: 1340345220604751223, guid: 0d1f951e4ac24fe478d688dbf86a5c39,
+        type: 3}
       propertyPath: inside
       value: 
       objectReference: {fileID: 40866121}
@@ -14001,6 +14018,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Ghost_Clyde
+      objectReference: {fileID: 0}
+    - target: {fileID: 8436053419019976313, guid: 0d1f951e4ac24fe478d688dbf86a5c39,
+        type: 3}
+      propertyPath: speed
+      value: 700
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0d1f951e4ac24fe478d688dbf86a5c39, type: 3}
@@ -14083,6 +14105,11 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 385579516}
+    - target: {fileID: 2014323573587572691, guid: 25f5544974e8f0b409f1c5070cbb2c0e,
+        type: 3}
+      propertyPath: speed
+      value: 700
+      objectReference: {fileID: 0}
     - target: {fileID: 2336075042848322177, guid: 25f5544974e8f0b409f1c5070cbb2c0e,
         type: 3}
       propertyPath: m_RootOrder
@@ -14147,6 +14174,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Ghost_Blinky
+      objectReference: {fileID: 0}
+    - target: {fileID: 8971009504729605341, guid: 25f5544974e8f0b409f1c5070cbb2c0e,
+        type: 3}
+      propertyPath: layer
+      value: Default
       objectReference: {fileID: 0}
     - target: {fileID: 8971009504729605341, guid: 25f5544974e8f0b409f1c5070cbb2c0e,
         type: 3}
@@ -17436,6 +17468,16 @@ PrefabInstance:
       propertyPath: target
       value: 
       objectReference: {fileID: 994717976}
+    - target: {fileID: 2499942207227959287, guid: 87e861fcfe4201c4d8213cba69c0f024,
+        type: 3}
+      propertyPath: speed
+      value: 700
+      objectReference: {fileID: 0}
+    - target: {fileID: 4988485570163000569, guid: 87e861fcfe4201c4d8213cba69c0f024,
+        type: 3}
+      propertyPath: layer
+      value: Default
+      objectReference: {fileID: 0}
     - target: {fileID: 4988485570163000569, guid: 87e861fcfe4201c4d8213cba69c0f024,
         type: 3}
       propertyPath: inside
@@ -18090,11 +18132,21 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6038318316045854512, guid: b6894cca0173e8041bba0e4a8be5fde1,
+        type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 6200000, guid: bc746cfcc38f46d49b42f58826cdf81a, type: 2}
     - target: {fileID: 6038318316045854514, guid: b6894cca0173e8041bba0e4a8be5fde1,
         type: 3}
       propertyPath: assignedGun
       value: 
       objectReference: {fileID: 899787348}
+    - target: {fileID: 6038318316045854519, guid: b6894cca0173e8041bba0e4a8be5fde1,
+        type: 3}
+      propertyPath: speed
+      value: 800
+      objectReference: {fileID: 0}
     - target: {fileID: 6038318316045854524, guid: b6894cca0173e8041bba0e4a8be5fde1,
         type: 3}
       propertyPath: m_RootOrder
