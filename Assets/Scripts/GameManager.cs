@@ -44,6 +44,7 @@ public class GameManager : MonoBehaviour {
     public List<string> comboNames;
     public Explosion explosionPrefab;
     public bool explodeOnClick;
+    [Layer] public string homeLayer;
     void Awake() {
         instance = this;
         fadingTexts = new List<FadingTexts>();

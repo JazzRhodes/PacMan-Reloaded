@@ -1,4 +1,5 @@
 using System.Collections;
+using NaughtyAttributes;
 using UnityEngine;
 public class GhostHome : GhostBehavior {
     public Transform inside;
@@ -15,7 +16,7 @@ public class GhostHome : GhostBehavior {
     private void OnCollisionEnter2D(Collision2D collision) {
         // Reverse direction everytime the ghost hits a wall to create the
         // effect of the ghost bouncing around the home
-        if (enabled && collision.gameObject.layer == LayerMask.NameToLayer("Obstacle")) {
+        if (enabled && collision.gameObject.layer == LayerMask.NameToLayer(GameManager.instance.homeLayer)) {
             ghost.movement.SetDirection(-ghost.movement.direction);
         }
     }
@@ -44,5 +45,7 @@ public class GhostHome : GhostBehavior {
         ghost.movement.SetDirection(new Vector2(Random.value < 0.5f ? -1.0f : 1.0f, 0.0f), true);
         ghost.movement.rigidbody.isKinematic = false;
         ghost.movement.enabled = true;
+        ghost.scatter.Enable();
+        ghost.chase.Enable();
     }
 }

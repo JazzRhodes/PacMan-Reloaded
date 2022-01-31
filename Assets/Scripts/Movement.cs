@@ -37,12 +37,13 @@ public class Movement : MonoBehaviour {
         rigidbody.MovePosition(position + translation);
     }
     /// <summary> 
-    /// Only set the direction if the tile in that direction is available,
-    /// otherwise we set it as the next direction so it'll automatically be
+    /// Check if the tile in that direction is available. If so, move in that direction.
+    /// If not, we set it as the next direction so it'll automatically be
     /// set when it does become available
     /// </summary>
     public void SetDirection(Vector2 dir, bool forced = false) {
-        if (forced || !HitWall(dir)) {
+        bool tileAvailable = !HitWall(dir);
+        if (tileAvailable || forced) {
             direction = dir;
             nextDirection = Vector2.zero;
         } else {
@@ -50,7 +51,7 @@ public class Movement : MonoBehaviour {
         }
     }
     /// <summary> 
-    /// If no collider is hit then there is no obstacle in that direction
+    /// If collider is hit, then there is an obstacle in that direction.
     /// </summary>
     public bool HitWall(Vector2 direction) {
         RaycastHit2D hit = Physics2D.BoxCast(transform.position, Vector2.one * 0.75f, 0.0f, direction, 1.5f, obstacleLayer);
