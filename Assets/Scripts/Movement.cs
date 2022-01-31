@@ -5,12 +5,16 @@ public class Movement : MonoBehaviour {
     public float speedMultiplier = 1.0f;
     public Vector2 initialDirection;
     public LayerMask obstacleLayer;
-    public new Rigidbody2D rigidbody { get; private set; }
+    public new Rigidbody2D rb { get; private set; }
     public Vector2 direction { get; private set; }
     public Vector2 nextDirection { get; private set; }
     public Vector3 startingPosition { get; private set; }
+    Ghost ghost;
+    float timer;
+    public Vector2 velocity;
     private void Awake() {
-        rigidbody = GetComponent<Rigidbody2D>();
+        ghost = GetComponent<Ghost>();
+        rb = GetComponent<Rigidbody2D>();
         startingPosition = transform.position;
     }
     private void Start() {
@@ -21,7 +25,7 @@ public class Movement : MonoBehaviour {
         direction = initialDirection;
         nextDirection = Vector2.zero;
         transform.position = startingPosition;
-        rigidbody.isKinematic = false;
+        rb.isKinematic = false;
         enabled = true;
     }
     private void Update() {
@@ -30,11 +34,21 @@ public class Movement : MonoBehaviour {
         if (nextDirection != Vector2.zero) {
             SetDirection(nextDirection);
         }
+        if (ghost && rb.velocity == Vector2.zero) {
+            timer += Time.deltaTime;
+        } else {
+            timer = 0;
+        }
+        if (timer >= GameManager.instance.campTime) {
+            timer = 0;
+            SetDirection(-direction);
+        }
+        velocity = rb.velocity;
     }
     private void FixedUpdate() {
-        Vector2 position = rigidbody.position;
+        Vector2 position = rb.position;
         Vector2 translation = direction * speed * speedMultiplier * Time.fixedDeltaTime;
-        rigidbody.MovePosition(position + translation);
+        rb.velocity = (translation);
     }
     /// <summary> 
     /// Check if the tile in that direction is available. If so, move in that direction.

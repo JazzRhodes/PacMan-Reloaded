@@ -23,7 +23,7 @@ public class GhostHome : GhostBehavior {
     private IEnumerator ExitTransition() {
         // Turn off movement while we manually animate the position
         ghost.movement.SetDirection(Vector2.up, true);
-        ghost.movement.rigidbody.isKinematic = true;
+        ghost.movement.rb.isKinematic = true;
         ghost.movement.enabled = false;
         Vector3 position = transform.position;
         float duration = 0.5f;
@@ -43,7 +43,7 @@ public class GhostHome : GhostBehavior {
         }
         // Pick a random direction left or right and re-enable movement
         ghost.movement.SetDirection(new Vector2(Random.value < 0.5f ? -1.0f : 1.0f, 0.0f), true);
-        ghost.movement.rigidbody.isKinematic = false;
+        ghost.movement.rb.isKinematic = false;
         ghost.movement.enabled = true;
         ghost.scatter.Enable();
         ghost.chase.Enable();

@@ -45,6 +45,7 @@ public class GameManager : MonoBehaviour {
     public Explosion explosionPrefab;
     public bool explodeOnClick;
     [Layer] public string homeLayer;
+    public float campTime;
     void Awake() {
         instance = this;
         fadingTexts = new List<FadingTexts>();
