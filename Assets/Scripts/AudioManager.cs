@@ -17,6 +17,15 @@ public class AudioManager : MonoBehaviour {
         instance = this;
         lastClip = null;
     }
+    void Update() {
+        if(GameManager.instance.slowMo && !GameManager.instance.paused){
+            audioSource.pitch = GameManager.instance.slowMoTime;
+            secondaryAudioSource.pitch = GameManager.instance.slowMoTime;
+        }else{
+            audioSource.pitch = 1;
+            secondaryAudioSource.pitch = 1;
+        }
+    }
     public static void PlayOneShot(AudioClip clip) {
         instance.secondaryAudioSource.PlayOneShot(clip);
     }

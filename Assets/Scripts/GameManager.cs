@@ -46,7 +46,6 @@ public class GameManager : MonoBehaviour {
     public Explosion explosionPrefab;
     public bool explodeOnClick;
     [Layer] public string homeLayer;
-    public float campTime;
     public float slowMoTime = 0.4f;
     float normalGameSpeed;
     public bool slowMo { get; set; }

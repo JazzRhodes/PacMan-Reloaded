@@ -199,6 +199,9 @@ MonoBehaviour:
   obstacleLayer:
     serializedVersion: 2
     m_Bits: 512
+  wallDetectSize: 0.8
+  stuckCheckSpeed: 0.1
+  campTime: 0.1
 --- !u!114 &3259707676119580883
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -215,7 +218,8 @@ MonoBehaviour:
   target: {fileID: 0}
   points: 200
   pacmanLayer: Pacman
-  deathParticles: {fileID: 4017174787221538852, guid: 7a623bcf59747ff4b85a7000c468bf58, type: 3}
+  deathParticles: {fileID: 4017174787221538852, guid: 7a623bcf59747ff4b85a7000c468bf58,
+    type: 3}
   deathBody: {fileID: 0}
   magnitude: 0
   roughness: 0
