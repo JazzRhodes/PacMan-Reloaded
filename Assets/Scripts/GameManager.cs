@@ -61,6 +61,7 @@ public class GameManager : MonoBehaviour {
     public List<SpriteRenderer> spriteRenderersInScene { get; set; }
     public List<MeshRenderer> meshRenderersInScene { get; set; }
     public bool useAllRenderersOnSlowMo;
+    public static float superPelletDuration;
     void Awake() {
         normalGameSpeed = gameSpeed;
         instance = this;
@@ -157,7 +158,7 @@ public class GameManager : MonoBehaviour {
                     foreach (var item in ghosts) {
                         foreach (var rend in item.GetComponentsInChildren<SpriteRenderer>()) {
                             if (rend.enabled) {
-                                SpriteTrail.GenerateAfterImage(rend.transform.position, rend.transform.rotation, rend.transform.localScale,rend.sprite, rend.color, rend.sortingLayerID, rend.sortingOrder);
+                                SpriteTrail.GenerateAfterImage(rend.transform.position, rend.transform.rotation, rend.transform.localScale, rend.sprite, rend.color, rend.sortingLayerID, rend.sortingOrder);
                             }
                         }
                     }
@@ -262,6 +263,11 @@ public class GameManager : MonoBehaviour {
         GameManager.instance.CancelInvoke(nameof(ResetGhostMultiplier));
         GameManager.instance.Invoke(nameof(ResetGhostMultiplier), pellet.duration);
         GameManager.instance.StartCoroutine(PowerPelletWait(pellet.duration));
+        superPelletDuration = pellet.duration;
+        if (GameManager.instance.pacman.enableSuper != null) {
+            GameManager.instance.StopCoroutine(GameManager.instance.pacman.enableSuper);
+        }
+        GameManager.instance.pacman.enableSuper = GameManager.instance.StartCoroutine(GameManager.instance.pacman.SuperPacMan());
     }
     public static IEnumerator PowerPelletWait(float duration) {
         yield return new WaitForSeconds(duration);

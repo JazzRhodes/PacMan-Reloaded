@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -11,6 +12,8 @@ public class Pacman : MonoBehaviour {
     public Gun assignedGun;
     bool slowMoInput;
     public Rigidbody2D rb{ get; set; }
+    public bool super{ get; set; }
+    public Coroutine enableSuper;
     private void Awake() {
         spriteRenderer = GetComponent<SpriteRenderer>();
         collider = GetComponent<Collider2D>();
@@ -72,5 +75,14 @@ public class Pacman : MonoBehaviour {
         deathSequence.enabled = true;
         deathSequence.spriteRenderer.enabled = true;
         deathSequence.Restart();
+    }
+    public IEnumerator SuperPacMan(){
+        super = true;
+        float timer = GameManager.superPelletDuration;
+        while (timer > 0){
+            timer -= Time.deltaTime;
+            yield return null;
+        }
+        super = false;
     }
 }

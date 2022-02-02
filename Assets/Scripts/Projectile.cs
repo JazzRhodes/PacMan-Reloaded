@@ -13,13 +13,13 @@ public class Projectile : MonoBehaviour {
     public float destructionRadius = 1f, rayDist;
     public LayerMask rayLayerMask;
     SpriteRenderer spriteRenderer;
-  
+
     void Awake() {
         collider2D = GetComponent<Collider2D>();
         rb = GetComponent<Rigidbody2D>();
         Destroy(gameObject, lifetime);
         spriteRenderer = GetComponent<SpriteRenderer>();
-        if(spriteRenderer && GameManager.instance.spriteRenderersInScene.Count > 0){
+        if (spriteRenderer && GameManager.instance.spriteRenderersInScene.Count > 0) {
             GameManager.instance.spriteRenderersInScene.Add(spriteRenderer);
         }
     }
@@ -45,7 +45,7 @@ public class Projectile : MonoBehaviour {
             if (GameManager.ghostDictionary.ContainsKey(other.gameObject)) {
                 GameManager.Shot(GameManager.ghostDictionary[other.gameObject], GameManager.ghostDictionary[other.gameObject].frightened.duration);
             }
-            if(other.gameObject == GameManager.instance.pacman.gameObject){
+            if (!GameManager.instance.pacman.super && other.gameObject == GameManager.instance.pacman.gameObject) {
                 GameManager.instance.PacmanEaten();
             }
             if (collisionTags.Contains(other.gameObject.tag)) {

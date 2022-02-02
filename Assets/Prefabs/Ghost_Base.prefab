@@ -214,7 +214,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 0.5
+  m_Radius: 0.7
 --- !u!114 &1631421945586648450
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -234,6 +234,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 512
   wallDetectSize: 0.8
+  wallDetectLength: 1.5
   stuckCheckSpeed: 0.1
   campTime: 0.1
 --- !u!114 &3259707676119580883
@@ -333,7 +334,7 @@ MonoBehaviour:
   raycastLayerMask:
     serializedVersion: 2
     m_Bits: 576
-  eyesightDistance: 20
+  eyesightDistance: 18
   rightHand: {fileID: 6434988885514789372}
   leftHand: {fileID: 4804186854196787769}
 --- !u!1 &5457398195424690228

@@ -12,7 +12,7 @@ public class Movement : MonoBehaviour {
     public Vector3 startingPosition { get; private set; }
     Ghost ghost;
     float timer;
-    public float wallDetectSize = 0.75f;
+    public float wallDetectSize = 0.75f, wallDetectLength = 1.5f;
     public float stuckCheckSpeed;
     public float campTime = 0.5f;
     private void Awake() {
@@ -75,7 +75,7 @@ public class Movement : MonoBehaviour {
     /// If collider is hit, then there is an obstacle in that direction.
     /// </summary>
     public bool HitWall(Vector2 direction) {
-        RaycastHit2D hit = Physics2D.BoxCast(transform.position, Vector2.one * wallDetectSize, 0.0f, direction, 1.5f, obstacleLayer);
+        RaycastHit2D hit = Physics2D.BoxCast(transform.position, Vector2.one * wallDetectSize, 0.0f, direction, wallDetectLength, obstacleLayer);
         return hit.collider != null;
     }
     public Vector2 AvailableDirection() {
