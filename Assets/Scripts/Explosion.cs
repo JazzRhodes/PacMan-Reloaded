@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using EZCameraShake;
 using NaughtyAttributes;
+using UnityEngine.Rendering.Universal;
 public class Explosion : MonoBehaviour {
     public bool killsGhosts = true;
     [Header("Camera Shake Options")]
@@ -14,6 +15,9 @@ public class Explosion : MonoBehaviour {
     [Range(0, 1)] public float volume = 1f;
     public float eForceRadius, eForceAmount;
     public LayerMask eForceLayerMask;
+    public Light2D lite;
+    public float lightTime;
+    public float lethalTime;
     void Awake() {
         pSystem = GetComponent<ParticleSystem>();
         particleCollisionEvents = new List<ParticleCollisionEvent>();
@@ -31,12 +35,14 @@ public class Explosion : MonoBehaviour {
         }
     }
     public void Explode(Vector3 pos) {
+        StartCoroutine(CountdownFlashTime());
+        StartCoroutine(CountdownLethalTime());
         Vector3 finalPos = pos;
         finalPos.z = 0;
         transform.position = finalPos;
         RipplePostProcessor.instance.CreateRipple(Camera.main.WorldToScreenPoint(pos));
         CameraShakeInstance c = CameraShaker.Instance.ShakeOnce(magnitude, roughness, fadeIn, fadeOut);
-        AudioManager.PlayOneShot(AudioManager.instance.explosion);
+        AudioManager.PlayOneShot(AudioManager.instance.explosion, volume);
         var bodies = Physics2D.OverlapCircleAll(transform.position, eForceRadius, eForceLayerMask);
         foreach (var item in bodies) {
             Vector2 dir = (item.transform.position - transform.position).normalized;
@@ -47,5 +53,21 @@ public class Explosion : MonoBehaviour {
             float amount = eForceAmount / distance;
             item.attachedRigidbody.AddForce(dir * amount, ForceMode2D.Impulse);
         }
+    }
+    IEnumerator CountdownLethalTime() {
+        float timer = lethalTime;
+        while (timer > 0) {
+            timer -= Time.deltaTime;
+            yield return null;
+        }
+        //
+    }
+    IEnumerator CountdownFlashTime() {
+        float timer = lightTime;
+        while (timer > 0) {
+            timer -= Time.deltaTime;
+            yield return null;
+        }
+        lite.gameObject.SetActive(false);
     }
 }

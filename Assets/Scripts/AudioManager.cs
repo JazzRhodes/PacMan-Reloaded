@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Timeline;
-
 public class AudioManager : MonoBehaviour {
     public static AudioManager instance;
     public AudioSource audioSource, secondaryAudioSource;
@@ -18,13 +17,17 @@ public class AudioManager : MonoBehaviour {
         lastClip = null;
     }
     void Update() {
-        if(GameManager.instance.slowMo && !GameManager.instance.paused){
-            audioSource.pitch = GameManager.instance.slowMoTime;
-            secondaryAudioSource.pitch = GameManager.instance.slowMoTime;
-        }else{
-            audioSource.pitch = 1;
-            secondaryAudioSource.pitch = 1;
-        }
+        // if (GameManager.instance.slowMo && !GameManager.instance.paused) {
+        //     audioSource.pitch = GameManager.instance.slowMoTime;
+        //     secondaryAudioSource.pitch = GameManager.instance.slowMoTime;
+        //     audioSource.outputAudioMixerGroup = GameManager.instance.slowMoReverb;
+        //     secondaryAudioSource.outputAudioMixerGroup = GameManager.instance.slowMoReverb;
+        // } else {
+        //     audioSource.pitch = 1;
+        //     secondaryAudioSource.pitch = 1;
+        //     audioSource.outputAudioMixerGroup = null;
+        //     secondaryAudioSource.outputAudioMixerGroup = null;
+        // }
     }
     public static void PlayOneShot(AudioClip clip) {
         instance.secondaryAudioSource.PlayOneShot(clip);

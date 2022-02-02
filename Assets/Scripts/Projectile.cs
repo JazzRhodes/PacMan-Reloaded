@@ -12,22 +12,29 @@ public class Projectile : MonoBehaviour {
     public bool destroysWalls, collisionTagsDestroysWalls;
     public float destructionRadius = 1f, rayDist;
     public LayerMask rayLayerMask;
+    SpriteRenderer spriteRenderer;
+  
     void Awake() {
         collider2D = GetComponent<Collider2D>();
         rb = GetComponent<Rigidbody2D>();
         Destroy(gameObject, lifetime);
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        if(spriteRenderer && GameManager.instance.spriteRenderersInScene.Count > 0){
+            GameManager.instance.spriteRenderersInScene.Add(spriteRenderer);
+        }
     }
     void FixedUpdate() {
         var hitWall = Physics2D.CircleCast(transform.position, destructionRadius, transform.right, rayDist, rayLayerMask);
-        if (hitWall) {
+        if (hitWall && destroysWalls) {
             GameManager.DestroyWall(hitWall.point);
-            //Destroy(gameObject);
+            Destroy(gameObject);
         }
     }
     void OnCollisionEnter2D(Collision2D other) {
         if (enabled) {
             if (ignoreCollisionTags.Contains(other.gameObject.tag)) {
                 Physics2D.IgnoreCollision(other.collider, collider2D);
+                return;
             }
             if (wallTags.Contains(other.gameObject.tag) && GameManager.instance.destructibleWallTilemap && destroysWalls) {
                 //var objs = Physics2D.OverlapCircleAll(transform.position, destructionRadius);
@@ -38,8 +45,11 @@ public class Projectile : MonoBehaviour {
             if (GameManager.ghostDictionary.ContainsKey(other.gameObject)) {
                 GameManager.Shot(GameManager.ghostDictionary[other.gameObject], GameManager.ghostDictionary[other.gameObject].frightened.duration);
             }
+            if(other.gameObject == GameManager.instance.pacman.gameObject){
+                GameManager.instance.PacmanEaten();
+            }
             if (collisionTags.Contains(other.gameObject.tag)) {
-                if (collisionTagsDestroysWalls && GameManager.instance.destructibleWallTilemap) {
+                if (collisionTagsDestroysWalls && GameManager.instance.destructibleWallTilemap && destroysWalls) {
                     foreach (var item in other.contacts) {
                         GameManager.DestroyWall(item.point);
                     }

@@ -59,11 +59,17 @@ TagManager:
   - name: Props
     uniqueID: 1886970829
     locked: 0
+  - name: ExplosionBG
+    uniqueID: 78371917
+    locked: 0
   - name: Player
     uniqueID: 1388919113
     locked: 0
   - name: Gun
     uniqueID: 3296357593
+    locked: 0
+  - name: ExplosionFG
+    uniqueID: 2166330189
     locked: 0
   - name: Overlay
     uniqueID: 1627387829

@@ -4,16 +4,18 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(Movement))]
 public class Pacman : MonoBehaviour {
     public AnimatedSprite deathSequence;
-    public SpriteRenderer spriteRenderer { get; private set; }
+    public SpriteRenderer spriteRenderer { get; set; }
     public new Collider2D collider { get; private set; }
     public Movement movement { get; private set; }
     bool up, down, left, right;
     public Gun assignedGun;
     bool slowMoInput;
+    public Rigidbody2D rb{ get; set; }
     private void Awake() {
         spriteRenderer = GetComponent<SpriteRenderer>();
         collider = GetComponent<Collider2D>();
         movement = GetComponent<Movement>();
+        rb = GetComponent<Rigidbody2D>();
     }
     private void Update() {
         // Set the new direction based on the current input

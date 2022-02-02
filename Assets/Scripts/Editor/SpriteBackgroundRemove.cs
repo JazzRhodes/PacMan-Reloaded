@@ -22,11 +22,14 @@ public class SpriteBackgroundRemove : EditorWindow {
         GUILayout.BeginVertical();
         img = (Texture2D)EditorGUILayout.ObjectField(img, typeof(Texture2D), false, GUILayout.MinWidth(128), GUILayout.MinHeight(128), GUILayout.MaxWidth(128), GUILayout.MaxHeight(128));
         colorToRemove = EditorGUILayout.ColorField(colorToRemove, GUILayout.MaxWidth(128));
-        if (GUILayout.Button("Preview", GUILayout.MinWidth(128), GUILayout.MinHeight(32), GUILayout.MaxWidth(128), GUILayout.MaxHeight(128))){
+        if (GUILayout.Button("Preview", GUILayout.MinWidth(128), GUILayout.MinHeight(32), GUILayout.MaxWidth(128), GUILayout.MaxHeight(128))) {
             newImg = RemoveColor(colorToRemove, img);
         }
-        if (GUILayout.Button("Alpha-fy All", GUILayout.MinWidth(128), GUILayout.MinHeight(32), GUILayout.MaxWidth(128), GUILayout.MaxHeight(128))){
+        if (GUILayout.Button("Alpha-fy All", GUILayout.MinWidth(128), GUILayout.MinHeight(32), GUILayout.MaxWidth(128), GUILayout.MaxHeight(128))) {
             RemoveColor(colorToRemove, (UnityEngine.Object[])Selection.GetFiltered(typeof(Texture2D), SelectionMode.Assets));
+        }
+        if (GUILayout.Button("Overwrite All", GUILayout.MinWidth(128), GUILayout.MinHeight(32), GUILayout.MaxWidth(128), GUILayout.MaxHeight(128))) {
+            RemoveColor(colorToRemove, (UnityEngine.Object[])Selection.GetFiltered(typeof(Texture2D), SelectionMode.Assets), true);
         }
         GUILayout.EndVertical();
         GUILayout.BeginVertical();
@@ -45,7 +48,7 @@ public class SpriteBackgroundRemove : EditorWindow {
         GUILayout.EndHorizontal();
     }
     // for multiple images
-    void RemoveColor(Color c, UnityEngine.Object[] imgs) {
+    void RemoveColor(Color c, UnityEngine.Object[] imgs, bool overwriteFile = false) {
         if (!Directory.Exists("Assets/AlphaImages/")) {
             Directory.CreateDirectory("Assets/AlphaImages/");
         }
@@ -68,7 +71,12 @@ public class SpriteBackgroundRemove : EditorWindow {
             n.SetPixels(0, 0, i.width, i.height, pixels, 0);
             n.Apply();
             byte[] bytes = n.EncodeToPNG();
-            File.WriteAllBytes("Assets/AlphaImages/" + i.name + "_alpha.png", bytes);
+            if (overwriteFile) {
+                string filePath = AssetDatabase.GetAssetPath(i);
+                File.WriteAllBytes(filePath, bytes);
+            } else {
+                File.WriteAllBytes("Assets/AlphaImages/" + i.name + "_alpha.png", bytes);
+            }
         }
         EditorUtility.ClearProgressBar();
         AssetDatabase.SaveAssets();

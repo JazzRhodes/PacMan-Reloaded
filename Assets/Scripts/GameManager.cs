@@ -7,6 +7,8 @@ using UnityEngine.SceneManagement;
 using UnityEngine.Tilemaps;
 using UnityEngine.UI;
 using EZCameraShake;
+using UnityEngine.Audio;
+using DG.Tweening;
 public class GameManager : MonoBehaviour {
     public static GameManager instance;
     public Ghost[] ghosts;
@@ -22,7 +24,7 @@ public class GameManager : MonoBehaviour {
     public static Dictionary<GameObject, Ghost> ghostDictionary;
     public static Dictionary<GameObject, Rigidbody2D> rigidbodiesDictionary;
     public static Dictionary<GameObject, Collider2D> colliderDictionary;
-    public GameObject bloodSplatter;
+    public List<GameObject> bloodSplatter;
     public Tilemap destructibleWallTilemap;
     public GridLayout gridLayout;
     [Range(0, 2)] public float gameSpeed = 1;
@@ -46,12 +48,24 @@ public class GameManager : MonoBehaviour {
     public Explosion explosionPrefab;
     public bool explodeOnClick;
     [Layer] public string homeLayer;
-    public float slowMoTime = 0.4f;
+    [Header("Slow Mo Shit")]
+    public float slowMoTime = 0.4f, slowMoLerpLength = 0.5f;
     float normalGameSpeed;
     public bool slowMo { get; set; }
+    public AudioMixerGroup slowMoReverb;
+    public float reverbMixNormal = -80f, slowmoVerbMix = -24f;
+    public List<GameObject> wallDebris;
+    public SpriteTrail spriteTrailPrefab, meshTrailPrefab;
+    public float spriteTrailTime;
+    float spriteTrailTimer, slowMoFadeTimer;
+    public List<SpriteRenderer> spriteRenderersInScene { get; set; }
+    public List<MeshRenderer> meshRenderersInScene { get; set; }
+    public bool useAllRenderersOnSlowMo;
     void Awake() {
         normalGameSpeed = gameSpeed;
         instance = this;
+        spriteRenderersInScene = new List<SpriteRenderer>();
+        meshRenderersInScene = new List<MeshRenderer>();
         fadingTexts = new List<FadingTexts>();
         killCombo = 0;
         ghostDictionary = new Dictionary<GameObject, Ghost>();
@@ -87,7 +101,18 @@ public class GameManager : MonoBehaviour {
         if (!haltTime) {
             Time.timeScale = paused ? 0 : gameSpeed;
             if (slowMo) {
-                Time.timeScale = slowMoTime;
+                slowMoFadeTimer += Time.deltaTime;
+                Time.timeScale = Mathf.Lerp(gameSpeed, slowMoTime, slowMoFadeTimer / slowMoLerpLength);
+                AudioManager.instance.audioSource.pitch = Time.timeScale;
+                AudioManager.instance.secondaryAudioSource.pitch = Time.timeScale;
+                AudioManager.instance.audioSource.outputAudioMixerGroup = slowMoReverb;
+                AudioManager.instance.secondaryAudioSource.outputAudioMixerGroup = slowMoReverb;
+            } else {
+                slowMoFadeTimer = 0;
+                AudioManager.instance.audioSource.outputAudioMixerGroup = null;
+                AudioManager.instance.secondaryAudioSource.outputAudioMixerGroup = null;
+                AudioManager.instance.audioSource.pitch = 1;
+                AudioManager.instance.secondaryAudioSource.pitch = 1;
             }
         }
         for (int i = 0; i < fadingTexts.Count; i++) {
@@ -103,6 +128,50 @@ public class GameManager : MonoBehaviour {
         }
         if (explodeOnClick && Input.GetMouseButtonDown(0)) {
             InstantiateExplosionOnClick(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+        }
+        if (slowMo && spriteTrailPrefab) {
+            spriteTrailTimer += Time.deltaTime;
+            if (spriteTrailTimer >= spriteTrailTime) {
+                spriteTrailTimer = 0;
+                if (useAllRenderersOnSlowMo) {
+                    if (spriteRenderersInScene.Count > 0) {
+                        foreach (var item in spriteRenderersInScene) {
+                            if (item && item.enabled) {
+                                SpriteTrail.GenerateAfterImage(item.transform.position, item.transform.rotation, item.transform.localScale, item.sprite, item.color, item.sortingLayerID, item.sortingOrder);
+                            }
+                        }
+                    } else {
+                        spriteRenderersInScene = FindObjectsOfType<SpriteRenderer>().ToList();
+                    }
+                    if (meshRenderersInScene.Count > 0) {
+                        foreach (var item in meshRenderersInScene) {
+                            if (item && item.enabled) {
+                                var mesh = item.GetComponent<MeshFilter>().mesh;
+                                SpriteTrail.GenerateAfterImage(item.transform.position, item.transform.rotation, item.transform.localScale, mesh, item.material.color, item.sortingLayerID, item.sortingOrder);
+                            }
+                        }
+                    } else {
+                        meshRenderersInScene = FindObjectsOfType<MeshRenderer>().ToList();
+                    }
+                } else {
+                    foreach (var item in ghosts) {
+                        foreach (var rend in item.GetComponentsInChildren<SpriteRenderer>()) {
+                            if (rend.enabled) {
+                                SpriteTrail.GenerateAfterImage(rend.transform.position, rend.transform.rotation, rend.transform.localScale,rend.sprite, rend.color, rend.sortingLayerID, rend.sortingOrder);
+                            }
+                        }
+                    }
+                    SpriteTrail.GenerateAfterImage(pacman.transform.position, pacman.transform.rotation, pacman.transform.localScale, pacman.spriteRenderer.sprite, pacman.spriteRenderer.color, pacman.spriteRenderer.sortingLayerID, pacman.spriteRenderer.sortingOrder);
+                }
+            }
+        } else {
+            if (spriteRenderersInScene.Count > 0) {
+                spriteRenderersInScene.Clear();
+            }
+            if (meshRenderersInScene.Count > 0) {
+                meshRenderersInScene.Clear();
+            }
+            spriteTrailTimer = 0;
         }
     }
     private void NewGame() {
@@ -146,9 +215,10 @@ public class GameManager : MonoBehaviour {
         AudioManager.PlayOneShot(deathClip);
         StartCoroutine(AudioManager.PlayOneShotDelayed(deathClip2, deathSoundWait1));
         StartCoroutine(AudioManager.PlayOneShotDelayed(deathClip2, deathSoundWait1 + two));
-        this.pacman.DeathSequence();
-        SetLives(this.lives - 1);
-        if (this.lives > 0) {
+        pacman.DeathSequence();
+        pacman.rb.velocity = Vector2.zero;
+        SetLives(lives - 1);
+        if (lives > 0) {
             Invoke(nameof(ResetState), 3.0f);
             AudioClip sirenCold = AudioManager.instance.sirenCold;
             AudioManager.PlayLoopedDelayed(sirenCold, 3.0f);
@@ -289,8 +359,14 @@ public class GameManager : MonoBehaviour {
         AudioManager.PlayOneShot(AudioManager.instance.gotShot);
         RipplePostProcessor.instance.CreateRipple(Camera.main.WorldToScreenPoint(ghost.transform.position));
         Instantiate(ghost.deathParticles, ghost.transform.position, Quaternion.identity);
-        Instantiate(GameManager.instance.bloodSplatter, ghost.transform.position, Quaternion.identity);
+        foreach (var item in GameManager.instance.bloodSplatter) {
+            Instantiate(item, ghost.transform.position, Quaternion.identity);
+        }
         var deadBody = Instantiate(ghost.deathBody, ghost.transform.position, Quaternion.identity);
+        var parts = deadBody.GetComponentsInChildren<MeshRenderer>(true);
+        if (parts.Length > 0 && GameManager.instance.meshRenderersInScene.Count > 0) {
+            GameManager.instance.meshRenderersInScene.AddRange(parts);
+        }
         ExplodeOnClick.Explode(deadBody, ghost.transform.position);
         ghost.SetPosition(ghost.home.inside.position);
         ghost.home.Enable(duration);
@@ -298,14 +374,17 @@ public class GameManager : MonoBehaviour {
     }
     public static void DestroyWall(Vector3 position) {
         Vector3Int pos = GameManager.instance.gridLayout.WorldToCell(position);
-        GameManager.instance.destructibleWallTilemap.SetTile(pos, null);
+        var tile = GameManager.instance.destructibleWallTilemap.GetTile(pos);
+        if (tile) {
+            GameManager.instance.destructibleWallTilemap.SetTile(pos, null);
+            foreach (var item in GameManager.instance.wallDebris) {
+                Instantiate(item, pos, Quaternion.identity);
+            }
+        }
     }
     public static void InstantiateExplosionOnClick(Vector3 pos) {
         var pre = Instantiate(
         GameManager.instance.explosionPrefab);
         pre.Explode(pos);
-    }
-    public void ChangeGameSpeed(float newSpeed) {
-
     }
 }

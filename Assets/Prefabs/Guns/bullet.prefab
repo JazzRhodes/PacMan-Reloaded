@@ -130,7 +130,7 @@ MonoBehaviour:
   deathParticles: {fileID: 3845207035668515343, guid: 3898cda4304d57a4f923be8f3b271041,
     type: 3}
   lifetime: 5
-  destroysWalls: 1
+  destroysWalls: 0
   collisionTagsDestroysWalls: 1
   destructionRadius: 0.125
   rayDist: 1.25

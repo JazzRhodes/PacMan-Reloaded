@@ -283,4 +283,10 @@ public static class StaticExtension {
         }
         transformToWiggle.localPosition = startPos;
     }
+    // public static IEnumerator ChangeSomeValue(float oldValue, float newValue, float duration) {
+    //     for (float t = 0f; t < duration; t += Time.deltaTime) {
+    //         fadeValue = Mathf.Lerp(oldValue, newValue, t / duration);
+    //         yield return null;
+    //     }
+    // }
 }
