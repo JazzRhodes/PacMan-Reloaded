@@ -9,14 +9,14 @@
                     "name": "Move",
                     "type": "PassThrough",
                     "id": "ddc2c69b-ed55-46b3-b179-4491c5d77bcc",
-                    "expectedControlType": "Vector2",
+                    "expectedControlType": "Stick",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
                 },
                 {
                     "name": "Shoot",
-                    "type": "PassThrough",
+                    "type": "Button",
                     "id": "0d76d21a-5dc4-4697-94e5-f64615d7896f",
                     "expectedControlType": "Button",
                     "processors": "",
@@ -155,8 +155,8 @@
                 },
                 {
                     "name": "",
-                    "id": "c3685d24-1e69-4503-9633-3f34a050fbb1",
-                    "path": "<Gamepad>/leftStick",
+                    "id": "7ceb3607-90a3-4162-89ee-5db9a5f02f62",
+                    "path": "<Gamepad>/dpad",
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
@@ -166,8 +166,8 @@
                 },
                 {
                     "name": "",
-                    "id": "7ceb3607-90a3-4162-89ee-5db9a5f02f62",
-                    "path": "<Gamepad>/dpad",
+                    "id": "bf1704b2-91f4-4399-8afe-224fd426b5f0",
+                    "path": "<Gamepad>/leftStick",
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
@@ -236,7 +236,18 @@
                     "path": "<Keyboard>/leftCtrl",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "KeyboardAndMouse",
+                    "action": "SlowMotion",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d1be3fbd-2dab-4855-b492-9b7c37643bbd",
+                    "path": "<Gamepad>/leftShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
                     "action": "SlowMotion",
                     "isComposite": false,
                     "isPartOfComposite": false

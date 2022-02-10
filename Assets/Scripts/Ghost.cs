@@ -1,6 +1,8 @@
 using UnityEngine;
 using NaughtyAttributes;
 using System.Collections.Generic;
+using UnityEditor;
+
 [RequireComponent(typeof(Movement))]
 public class Ghost : MonoBehaviour {
     public Movement movement { get; set; }
@@ -30,6 +32,27 @@ public class Ghost : MonoBehaviour {
     }
     void Update() {
         pointsAdded = points * GameManager.instance.ghostMultiplier;
+        if (GameManager.instance.players.Count > 0) {
+            if (!target) {
+                if (GameManager.instance.players.Count == 1) {
+                    target = GameManager.instance.players[0].transform;
+                } else {
+                    int randomPlayer = Random.Range(0, GameManager.instance.players.Count);
+                    target = GameManager.instance.players[randomPlayer].transform;
+                }
+            } else {
+                if (GameManager.instance.players.Count > 1) {
+                    float closestPlayerDistance = Mathf.Infinity;
+                    foreach (var item in GameManager.instance.players) {
+                        float distanceFromPlayer = Vector3.Distance(transform.position, item.transform.position);
+                        if (distanceFromPlayer < closestPlayerDistance) {
+                            closestPlayerDistance = distanceFromPlayer;
+                            target = item.transform;
+                        }
+                    }
+                }
+            }
+        }
     }
     public void ResetState() {
         gameObject.SetActive(true);
@@ -56,7 +79,7 @@ public class Ghost : MonoBehaviour {
                 AudioClip eatenSound = AudioManager.instance.eatGhost;
                 AudioManager.PlayOneShot(eatenSound);
             } else {
-                GameManager.instance.PacmanEaten();
+                GameManager.instance.StartCoroutine(GameManager.instance.PacmanEaten());
             }
         }
     }

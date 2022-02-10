@@ -45,8 +45,11 @@ public class Projectile : MonoBehaviour {
             if (GameManager.ghostDictionary.ContainsKey(other.gameObject)) {
                 GameManager.Shot(GameManager.ghostDictionary[other.gameObject], GameManager.ghostDictionary[other.gameObject].frightened.duration);
             }
-            if (!GameManager.instance.pacman.super && other.gameObject == GameManager.instance.pacman.gameObject) {
-                GameManager.instance.PacmanEaten();
+            for (int i = 0; i < GameManager.instance.players.Count; i++) {
+
+                if (!GameManager.instance.players[i].super && other.gameObject == GameManager.instance.players[i].gameObject) {
+                    GameManager.instance.StartCoroutine( GameManager.instance.PacmanEaten());
+                }
             }
             if (collisionTags.Contains(other.gameObject.tag)) {
                 if (collisionTagsDestroysWalls && GameManager.instance.destructibleWallTilemap && destroysWalls) {

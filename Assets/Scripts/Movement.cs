@@ -95,13 +95,15 @@ public class Movement : MonoBehaviour {
         }
         float minDistance = float.MaxValue;
         foreach (var availableDirection in availableDirs) {
-            Vector3 availableDir_X_Y = new Vector3(availableDirection.x, availableDirection.y);
-            Vector3 newPosition = transform.position + availableDir_X_Y;
-            Vector3 pacmanPosition = ghost.target.position;
-            float distance = (pacmanPosition - newPosition).sqrMagnitude;
-            if (distance < minDistance) {
-                dir = availableDirection;
-                minDistance = distance;
+            if (ghost.target) {
+                Vector3 availableDir_X_Y = new Vector3(availableDirection.x, availableDirection.y);
+                Vector3 newPosition = transform.position + availableDir_X_Y;
+                Vector3 pacmanPosition = ghost.target.position;
+                float distance = (pacmanPosition - newPosition).sqrMagnitude;
+                if (distance < minDistance) {
+                    dir = availableDirection;
+                    minDistance = distance;
+                }
             }
         }
         return dir;

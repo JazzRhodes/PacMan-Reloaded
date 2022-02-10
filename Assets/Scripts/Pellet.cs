@@ -9,7 +9,7 @@ public class Pellet : MonoBehaviour {
         AudioManager.PlayOneShot(sound);
     }
     private void OnTriggerEnter2D(Collider2D other) {
-        if (other.gameObject.layer == LayerMask.NameToLayer(pacmanLayer)) {
+        if (GameManager.ready && other.gameObject.layer == LayerMask.NameToLayer(pacmanLayer)) {
             AudioClip eatSound = AudioManager.instance.eatPellet;
             Eat(eatSound);
         }

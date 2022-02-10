@@ -12,13 +12,14 @@ using DG.Tweening;
 public class GameManager : MonoBehaviour {
     public static GameManager instance;
     public Ghost[] ghosts;
-    public Pacman pacman;
+    public List<Pacman> players;
     public Transform pellets;
-    public Text gameOverText, scoreText, livesText, readyText;
+    public Text scoreText, livesText, readyText;
     public int ghostMultiplier { get; private set; } = 1;
     public int score { get; private set; }
     public int lives { get; private set; }
     public float deathSoundWait1, two;
+    public float resetStageWait = 3.0f;
     public bool paused, pauseInputHit;
     public bool haltTime;
     public static Dictionary<GameObject, Ghost> ghostDictionary;
@@ -62,7 +63,9 @@ public class GameManager : MonoBehaviour {
     public List<MeshRenderer> meshRenderersInScene { get; set; }
     public bool useAllRenderersOnSlowMo;
     public static float superPelletDuration;
+    public static bool ready = false;
     void Awake() {
+        ready = false;
         normalGameSpeed = gameSpeed;
         instance = this;
         spriteRenderersInScene = new List<SpriteRenderer>();
@@ -86,6 +89,9 @@ public class GameManager : MonoBehaviour {
     private void Start() {
         NewGame();
         ActivateLivingEntities(false);
+        foreach (var item in ghosts) {
+            CameraMultiTarget.instance.AddTarget(item.gameObject);
+        }
     }
     private void Update() {
         //Gameover stuff
@@ -162,7 +168,9 @@ public class GameManager : MonoBehaviour {
                             }
                         }
                     }
-                    SpriteTrail.GenerateAfterImage(pacman.transform.position, pacman.transform.rotation, pacman.transform.localScale, pacman.spriteRenderer.sprite, pacman.spriteRenderer.color, pacman.spriteRenderer.sortingLayerID, pacman.spriteRenderer.sortingOrder);
+                    for (int i = 0; i < players.Count; i++) {
+                        SpriteTrail.GenerateAfterImage(players[i].transform.position, players[i].transform.rotation, players[i].transform.localScale, players[i].spriteRenderer.sprite, players[i].spriteRenderer.color, players[i].spriteRenderer.sortingLayerID, players[i].spriteRenderer.sortingOrder);
+                    }
                 }
             }
         } else {
@@ -181,25 +189,27 @@ public class GameManager : MonoBehaviour {
         NewRound();
     }
     private void NewRound() {
-        this.gameOverText.enabled = false;
         foreach (Transform pellet in pellets) {
             pellet.gameObject.SetActive(true);
         }
-        ResetState();
+        ResetStage();
     }
-    private void ResetState() {
+    private void ResetStage() {
         for (int i = 0; i < this.ghosts.Length; i++) {
             this.ghosts[i].ResetState();
         }
-        this.pacman.ResetState();
+        for (int i = 0; i < players.Count; i++) {
+            this.players[i].ResetState();
+        }
         CleanScene();
     }
     private void GameOver() {
-        this.gameOverText.enabled = true;
         for (int i = 0; i < this.ghosts.Length; i++) {
             this.ghosts[i].gameObject.SetActive(false);
         }
-        this.pacman.gameObject.SetActive(false);
+        for (int i = 0; i < players.Count; i++) {
+            this.players[i].gameObject.SetActive(false);
+        }
     }
     private void SetLives(int lives) {
         this.lives = lives;
@@ -209,20 +219,23 @@ public class GameManager : MonoBehaviour {
         GameManager.instance.score = score;
         GameManager.instance.scoreText.text = score.ToString().PadLeft(2, '0');
     }
-    public void PacmanEaten() {
+    public IEnumerator PacmanEaten() {
         AudioManager.StopAll();
         AudioClip deathClip = AudioManager.instance.death;
         AudioClip deathClip2 = AudioManager.instance.death2;
         AudioManager.PlayOneShot(deathClip);
         StartCoroutine(AudioManager.PlayOneShotDelayed(deathClip2, deathSoundWait1));
         StartCoroutine(AudioManager.PlayOneShotDelayed(deathClip2, deathSoundWait1 + two));
-        pacman.DeathSequence();
-        pacman.rb.velocity = Vector2.zero;
+        for (int i = 0; i < players.Count; i++) {
+            players[i].DeathSequence();
+            players[i].rb.velocity = Vector2.zero;
+        }
         SetLives(lives - 1);
+        yield return new WaitForSeconds(resetStageWait);
         if (lives > 0) {
-            Invoke(nameof(ResetState), 3.0f);
+            ResetStage();
             AudioClip sirenCold = AudioManager.instance.sirenCold;
-            AudioManager.PlayLoopedDelayed(sirenCold, 3.0f);
+            AudioManager.PlayLooped(sirenCold);
         } else {
             GameOver();
         }
@@ -251,7 +264,9 @@ public class GameManager : MonoBehaviour {
         pellet.gameObject.SetActive(false);
         GameManager.SetScore(GameManager.instance.score + pellet.points);
         if (!GameManager.instance.HasRemainingPellets()) {
-            GameManager.instance.pacman.gameObject.SetActive(false);
+            for (int i = 0; i < GameManager.instance.players.Count; i++) {
+                GameManager.instance.players[i].gameObject.SetActive(false);
+            }
             GameManager.instance.Invoke(nameof(NewRound), 3.0f);
         }
     }
@@ -264,10 +279,12 @@ public class GameManager : MonoBehaviour {
         GameManager.instance.Invoke(nameof(ResetGhostMultiplier), pellet.duration);
         GameManager.instance.StartCoroutine(PowerPelletWait(pellet.duration));
         superPelletDuration = pellet.duration;
-        if (GameManager.instance.pacman.enableSuper != null) {
-            GameManager.instance.StopCoroutine(GameManager.instance.pacman.enableSuper);
+        for (int i = 0; i < GameManager.instance.players.Count; i++) {
+            if (GameManager.instance.players[i].enableSuper != null) {
+                GameManager.instance.StopCoroutine(GameManager.instance.players[i].enableSuper);
+            }
+            GameManager.instance.players[i].enableSuper = GameManager.instance.StartCoroutine(GameManager.instance.players[i].SuperPacMan());
         }
-        GameManager.instance.pacman.enableSuper = GameManager.instance.StartCoroutine(GameManager.instance.pacman.SuperPacMan());
     }
     public static IEnumerator PowerPelletWait(float duration) {
         yield return new WaitForSeconds(duration);
@@ -285,7 +302,9 @@ public class GameManager : MonoBehaviour {
         this.ghostMultiplier = 1;
     }
     public void ActivateLivingEntities(bool isActive) {
-        pacman.gameObject.SetActive(isActive);
+        for (int i = 0; i < players.Count; i++) {
+            players[i].gameObject.SetActive(isActive);
+        }
         foreach (var item in ghosts) {
             item.gameObject.SetActive(isActive);
         }

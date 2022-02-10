@@ -35,18 +35,22 @@ public class GhostGun : MonoBehaviour {
                 scale.y = originalY;
                 assignedGun.transform.localScale = scale;
             }
-            var dirFromPacman = (GameManager.instance.pacman.transform.position - transform.position).normalized;
-            var movedot = Vector2.Dot(movement.direction, dirFromPacman);
-            if (movedot > 0.5f) {
-                var hitPacman = Physics2D.Raycast(transform.position, movement.direction, eyesightDistance, raycastLayerMask);
-                Ray r = new Ray(transform.position, movement.direction);
-                Debug.DrawRay(r.origin, r.direction);
-                if (hitPacman.collider == GameManager.instance.pacman.collider) {
-                    assignedGun.triggerDown = true;
-                    assignedGun.triggerHeld = true;
-                } else {
-                    assignedGun.triggerDown = false;
-                    assignedGun.triggerHeld = false;
+            for (int i = 0; i < GameManager.instance.players.Count; i++) {
+
+                Vector2 dirFromPacman = (GameManager.instance.players[i].transform.position - transform.position).normalized;
+                var movedot = Vector2.Dot(movement.direction, dirFromPacman);
+                if (movedot > 0.5f) {
+                    var hitPacman = Physics2D.Raycast(transform.position, movement.direction, eyesightDistance, raycastLayerMask);
+                    Ray r = new Ray(transform.position, movement.direction);
+                    Debug.DrawRay(r.origin, r.direction);
+
+                    if (hitPacman.collider == GameManager.instance.players[i].collider) {
+                        assignedGun.triggerDown = true;
+                        assignedGun.triggerHeld = true;
+                    } else {
+                        assignedGun.triggerDown = false;
+                        assignedGun.triggerHeld = false;
+                    }
                 }
             }
         }

@@ -27,27 +27,32 @@ namespace EZCameraShake {
         Vector3 posAddShake, rotAddShake;
         List<CameraShakeInstance> cameraShakeInstances = new List<CameraShakeInstance>();
         public Transform target;
+        public bool followTarget;
         void Awake() {
             Instance = this;
             instanceList.Add(gameObject.name, this);
         }
-        void Update() {
-            posAddShake = Vector3.zero;
-            rotAddShake = Vector3.zero;
-            for (int i = 0; i < cameraShakeInstances.Count; i++) {
-                if (i >= cameraShakeInstances.Count)
-                    break;
-                CameraShakeInstance c = cameraShakeInstances[i];
-                if (c.CurrentState == CameraShakeState.Inactive && c.DeleteOnInactive) {
-                    cameraShakeInstances.RemoveAt(i);
-                    i--;
-                } else if (c.CurrentState != CameraShakeState.Inactive) {
-                    posAddShake += CameraUtilities.MultiplyVectors(c.UpdateShake(), c.PositionInfluence);
-                    rotAddShake += CameraUtilities.MultiplyVectors(c.UpdateShake(), c.RotationInfluence);
+        void LateUpdate() {
+            if (target) {
+                posAddShake = Vector3.zero;
+                rotAddShake = Vector3.zero;
+                for (int i = 0; i < cameraShakeInstances.Count; i++) {
+                    if (i >= cameraShakeInstances.Count)
+                        break;
+                    CameraShakeInstance c = cameraShakeInstances[i];
+                    if (c.CurrentState == CameraShakeState.Inactive && c.DeleteOnInactive) {
+                        cameraShakeInstances.RemoveAt(i);
+                        i--;
+                    } else if (c.CurrentState != CameraShakeState.Inactive) {
+                        posAddShake += CameraUtilities.MultiplyVectors(c.UpdateShake(), c.PositionInfluence);
+                        rotAddShake += CameraUtilities.MultiplyVectors(c.UpdateShake(), c.RotationInfluence);
+                    }
+                }
+                if (followTarget) {
+                    transform.localPosition = target.position + posAddShake + RestPositionOffset;
+                    transform.localEulerAngles = rotAddShake + RestRotationOffset;
                 }
             }
-            transform.localPosition =target.position + posAddShake + RestPositionOffset;
-            transform.localEulerAngles = rotAddShake + RestRotationOffset;
         }
         /// <summary>
         /// Gets the CameraShaker with the given name, if it exists.
